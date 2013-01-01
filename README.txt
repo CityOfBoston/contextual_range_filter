@@ -41,8 +41,8 @@ If you don't use the Views Global Filter widgets, then you set your contextual
 filters by appending "arguments" to the view's URL. Using the double-hyphen '--'
 as a range separator, you can filter your view output like so:
 
-  http://mysite.com/myview/100--199.99  (numeric range)
-  http://mysite.com/myotherview/k--qzz  (alphabetical range)
+  http://yoursite.com/yourview/100--199.99  (numeric range)
+  http://yoursite.com/yourotherview/k--qzz  (alphabetical range)
 
 Ranges are inclusive of "from" and "to" values and will be case-insensitive,
 unless your database defaults otherwise. In your database's alphabet, numbers
@@ -54,24 +54,24 @@ to and including anything starting with the letter r is returned use ' --r~'.
 
 You may omit the start or end values to specify open-ended filter ranges:
 
-  http://mysite.com/myview/100--
+  http://yoursite.com/yourview/100--
 
 Multiple contextual filters (eg Title followed by Price) are fine and if you
 ticked "Allow multiple ranges" also, you can use the plus sign to OR filter
 ranges like this:
 
-  http://mysite.com/mythirdview/a--e~+k--r~/--500
+  http://yoursite.com/yourthirdview/a--e~+k--r~/--500
 
 Or, if "Glossary mode" is on, so that only the first letter matters, the above
 becomes:
 
-  http://mysite.com/mythirdview/a--e+k--r/--500
+  http://yoursite.com/yourthirdview/a--e+k--r/--500
 
 You may use a colon ':' instead of the double hyphen.
 Use either '--', ':' or 'all' to return all View results for the associated
 filter:
 
-  http://mysite.com/mythirdview/all/-100--999.99
+  http://yoursite.com/yourthirdview/all/-100--999.99
 
 
 MORE ABOUT CONTEXTUAL FILTERS:

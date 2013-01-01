@@ -1,5 +1,5 @@
 name = Contextual Range Filter
-description = Provides option to contextually filter Views by alphabetic or numeric ranges, eg http://mysite.com/myview/50--99.95
+description = Provides option to contextually filter Views by alphabetic or numeric ranges, eg http://yoursite.com/yourview/50--99.95
 package = Views
 dependencies[] = views
 files[] = views/contextual_range_filter_handler_argument_numeric_range.inc

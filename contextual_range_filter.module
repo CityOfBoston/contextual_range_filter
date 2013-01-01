@@ -8,7 +8,7 @@
  * and have added this field as the first contextual filter, then you can filter
  * your View page like so:
  *
- *   http://mysite.com/myview/100--199.99
+ *   http://yoursite.com/yourview/100--199.99
  *
  * Integers, floats and string types are supported.
  * The OR ('+') operators is supported.
