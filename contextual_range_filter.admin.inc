@@ -75,7 +75,7 @@ function contextual_range_filter_admin_config() {
   $form['field_names'] = array(
     '#type' => 'fieldset',
     '#title' => t('Select contextual filters to be converted to contextual range filters'),
-    '#description' => t("You must first add contextual filters to your views for them to appear on this page.<br/>Once added you use contextual range filters like contextual date filters in that you separate start and end values by a double hyphen, e.g.<strong>http://mysite.com/myview/50--149.95</strong> You may omit the start or end values to create open-ended ranges, e.g. <strong>http://mysite.com/myview/--149.95</strong> or <strong>http://mysite.com/myview/50--</strong> <br/>Both numeric and alphabetic ranges are inclusive of start and end values. Instead of '<strong>--</strong>' you may use a colon '<strong>:</strong>'")
+    '#description' => t("You must first add contextual filters to your views for them to appear on this page.<br/>Once added you use contextual range filters like contextual date filters in that you separate start and end values by a double hyphen, e.g. <strong>http://yoursite.com/yourview/50--149.95</strong> You may omit the start or end values to create open-ended ranges, e.g. <strong>http://yoursite.com/yourview/--149.95</strong> or <strong>http://yoursite.com/yourview/50--</strong> <br/>Both numeric and alphabetic ranges are inclusive of start and end values. Instead of '<strong>--</strong>' you may use a colon '<strong>:</strong>'")
   );
   foreach ($numeric_fields as $field_name => $view_names) {
     $numeric_fields[$field_name] = t('%field in view: @views', array(
