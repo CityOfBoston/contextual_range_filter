@@ -3,14 +3,16 @@ CONTEXTUAL RANGE FILTER
 =======================
 
 This is a simple plugin for Views that adds the option to contextually filter
-a view not just by a single value, but also by a value RANGE.
+a view not just by a single value, but also by RANGE.
 
-Both numeric (float, integer) and alphabetical (string) ranges are supported,
-as are the OR operator ('+') and the negate operator. You negate by ticking the
-"Exclude" box on the Views Contextual filter configuration panel, in the "More"
-section.
+Both numeric (float, integer) and alphabetical (string) ranges are supported, as
+well as lists keyed by integer, with some restrictions.
 
 Taxonomy term ids, node ids etc are special cases of integers so will work also.
+
+You may use the OR ('+') and the negate operators. You negate by ticking the
+"Exclude" box on the Views Contextual filter configuration panel, in the "More"
+section.
 
 Just like normal contextual filters, contextual range filters may be set by
 appending filter values to the URL. Alternatively, if you want to use a UI,
@@ -43,6 +45,7 @@ as a range separator, you can filter your view output like so:
 
   http://yoursite.com/yourview/100--199.99  (numeric range)
   http://yoursite.com/yourotherview/k--qzz  (alphabetical range)
+  http://yoursite.com/somebodysview/1--9    (list range, using list keys)
 
 Ranges are inclusive of "from" and "to" values and will be case-insensitive,
 unless your database defaults otherwise. In your database's alphabet, numbers
@@ -73,9 +76,10 @@ filter:
 
   http://yoursite.com/yourthirdview/all/-100--999.99
 
-
-MORE ABOUT CONTEXTUAL FILTERS:
-o http://drupal.org/node/1578558
+When you use a contextual range filter on a list be aware that while the list
+keys operate as integers, they are stored on the database as strings, so
+SQL queries may produce unexpected results when your list key ranges straddle
+10 or 100. For instance, the list range 8--15 will return NO results!
 
 ASCII AND UTF CHARACTER ORDERING
 o http://en.wikipedia.org/wiki/UTF-8
