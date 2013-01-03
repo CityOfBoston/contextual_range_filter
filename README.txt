@@ -79,7 +79,8 @@ filter:
 When you use a contextual range filter on a list be aware that while the list
 keys operate as integers, they are stored on the database as strings, so
 SQL queries may produce unexpected results when your list key ranges straddle
-10 or 100. For instance, the list range 8--15 will return NO results!
+10 or 100. For instance, the list range 2--10 will return NO results, because
+the values 3 to 9 come after 10 in the alphabet!
 
 ASCII AND UTF CHARACTER ORDERING
 o http://en.wikipedia.org/wiki/UTF-8
