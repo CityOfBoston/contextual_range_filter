@@ -40,6 +40,39 @@ function contextual_range_filter_split($range) {
 }
 
 /**
+ * Return values of a list range as an array.
+ *
+ * @param string $range, in format parseable by contextual_range_filter()
+ * @param array $allowed_values
+ * @return array of keys into $allowed_values array, or FALSE when range 'from'
+ *   was not found
+ */
+function contextual_range_filter_explode_list_range($range, $allowed_values) {
+  list($from, $to) = contextual_range_filter_split($range);
+  $from = strtolower($from);
+  if ($to === FALSE) {
+    $to = $from;
+  }
+  else {
+    $to = strtolower($to);
+  }
+  foreach ($allowed_values as $key => $value) {
+    $value = strtolower($value);
+    if (empty($from) || $key == $from || $value == $from) {
+      // Found the from value, start collecting keys.
+      $keys = array();
+    }
+    if (isset($keys)) {
+      $keys[] = $key;
+    }
+    if (!empty($to) && ($key == $to || $value == $to)) {
+      return $keys;
+    }
+  }
+  return isset($keys) ? $keys : FALSE;
+}
+
+/**
  * Implements hook_menu().
  */
 function contextual_range_filter_menu() {
