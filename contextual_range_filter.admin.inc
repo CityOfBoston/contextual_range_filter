@@ -71,7 +71,7 @@ function contextual_range_filter_admin_config() {
   $form['field_names'] = array(
     '#type' => 'fieldset',
     '#title' => t('Select contextual filters to be converted to contextual range filters'),
-    '#description' => t("You must first add contextual filters to your views for them to appear on this page.<br/>Once added you use contextual range filters like contextual date filters in that you separate start and end values by a double hyphen, e.g. <strong>http://yoursite.com/yourview/50--149.95</strong> You may omit the start or end values to create open-ended ranges, e.g. <strong>http://yoursite.com/yourview/--149.95</strong> or <strong>http://yoursite.com/yourview/50--</strong> <br/>Both numeric and alphabetic ranges are inclusive of start and end values. Instead of '<strong>--</strong>' you may use a colon '<strong>:</strong>'")
+    '#description' => t('You must first add contextual filters to your views for them to appear on this page.<br/>Once added you use contextual range filters like contextual date filters in that you separate "from" and "to" values by a double hyphen, e.g. <strong>http://yoursite.com/yourview/50--149.95</strong> You may omit the from or to values to create open-ended ranges, e.g. <strong>http://yoursite.com/yourview/--149.95</strong> or <strong>http://yoursite.com/yourview/50--</strong> <br/>All filter ranges are inclusive of from and to values. Instead of "<strong>--</strong>" you may use a colon "<strong>:</strong>"')
   );
   $types = array(t('numeric'), t('string'), t('list'));
   $type = reset($types);

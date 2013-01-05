@@ -47,7 +47,9 @@ class contextual_range_filter_handler_argument_list_range extends views_handler_
     foreach ($this->value as $range) {
       $placeholder = $this->placeholder();
       $range_values = contextual_range_filter_explode_list_range($range, $this->allowed_values);
-      $this->query->add_where_expression($group, "$field $operator ($placeholder) $null_check", array($placeholder => $range_values));
+      if ($range_values) {
+        $this->query->add_where_expression($group, "$field $operator ($placeholder) $null_check", array($placeholder => $range_values));
+      }
     }
   }
 

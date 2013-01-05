@@ -10,10 +10,10 @@
  *
  *   http://yoursite.com/yourview/100--199.99
  *
- * Integers, floats and string types are supported.
+ * Integers, floats, string and list types are supported.
  * The OR ('+') operators is supported.
  * The negate operator ("Exclude" tick box) is supported.
- * "Glossary mode" (match on first N characters) is supported.
+ * "Glossary mode" (match on first N characters of a string) is supported.
  */
 
 define('CONTEXTUAL_RANGE_FILTER_SEPARATOR1', '--'); // same as used for dates

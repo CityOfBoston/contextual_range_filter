@@ -45,16 +45,35 @@ as a range separator, you can filter your view output like so:
 
   http://yoursite.com/yourview/100--199.99  (numeric range)
   http://yoursite.com/yourotherview/k--qzz  (alphabetical range)
-  http://yoursite.com/somebodysview/1--9    (list range, using list keys)
-  http://yoursite.com/somebodysview/infant--retiree (list range, using list keys)
+  http://yoursite.com/somebodysview/4--7    (list range, using list keys)
+  http://yoursite.com/somebodysview/teenager--retiree (list range, using names)
 
-Ranges are inclusive of "from" and "to" values and will be case-insensitive,
-unless your database defaults otherwise. In your database's alphabet, numbers
-and special characters (@ # $ % etc.) generally come before letters , e.g.
-"42nd Street" comes before "Fifth Avenue" and also before "5th Avenue". The
-first printable ASCII character is the space (%20). The last printable ASCII
-character is '~'. So to make sure everything from "!Hello" and "@the Races" up
-to and including anything starting with the letter r is returned use ' --r~'.
+For lists you may use either the keys or the RHS names in the allowed values list
+on the Field settings page, admin/structure/types/manage/<content-type>/fields/<field-type>/field-settings.
+Example:
+
+  1|Baby
+  2|Toddler
+  3|Child
+  4|Teenager
+  5|Adult
+  6|Middle-aged
+  7|Retiree
+
+The list range order is the order of the allowed values. As far as the
+Contextual Range Filter module is concerned list keys need not be consecutive.
+However, if you wish to use the Slide with Style range slider widget, the list
+keys must be integers with an increment of 1.
+
+All ranges are inclusive of "from" and "to" value.
+
+Strings will be case-insensitive, unless your database defaults otherwise. In
+your database's alphabet, numbers and special characters (@ # $ % etc.)
+generally come before letters , e.g. "42nd Street" comes before "Fifth Avenue"
+and also before "5th Avenue". The first printable ASCII character is the space
+(%20). The last printable ASCII character is the tilde '~'. So to make sure
+everything from "!Hello" and "@the Races" up to and including anything starting
+with the letter r is returned use " --r~".
 
 You may omit the start or end values to specify open-ended filter ranges:
 
@@ -76,6 +95,7 @@ Use either '--', ':' or 'all' to return all View results for the associated
 filter:
 
   http://yoursite.com/yourthirdview/all/-100--999.99
+
 
 ASCII AND UTF CHARACTER ORDERING
 o http://en.wikipedia.org/wiki/UTF-8
