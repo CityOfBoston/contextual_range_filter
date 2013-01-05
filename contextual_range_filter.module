@@ -20,6 +20,20 @@ define('CONTEXTUAL_RANGE_FILTER_SEPARATOR1', '--'); // same as used for dates
 define('CONTEXTUAL_RANGE_FILTER_SEPARATOR2', ':');  // alternative delimiter
 
 /**
+ * Implements hook_help().
+ */
+function contextual_range_filter_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#contextual_range_filter':
+      $t = t('Configuration and usage instructions are in this <a href="@README">README</a> file.<br/>Known issues and solutions may be found on the <a href="@contextual_range_filter">Contextual Range Filter</a> project page.', array(
+        '@README' => url(drupal_get_path('module', 'contextual_range_filter') . '/README.txt'),
+        '@contextual_range_filter' => url('http://drupal.org/project/contextual_range_filter')));
+      break;
+  }
+  return empty($t) ? '' : '<p>' . $t . '</p>';
+}
+
+/**
  * Split a filter range string into an array containing "from" and "to" values.
  *
  * @param string $range, format "from--to", "from--" or "--to".
@@ -94,7 +108,7 @@ function contextual_range_filter_permission() {
   return array(
     'administer contextual range filters' => array(
       'title' => t('Administer contextual range filters'),
-      'description' => t('Access the Contextual Range Filter configuration page.'),
+      'description' => t('Allow access the Contextual Range Filter configuration page.'),
     )
   );
 }
