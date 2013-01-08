@@ -71,7 +71,7 @@ function contextual_range_filter_admin_config() {
   $form['field_names'] = array(
     '#type' => 'fieldset',
     '#title' => t('Select contextual filters to be converted to contextual range filters'),
-    '#description' => t('You must first add contextual filters to your views for them to appear on this page.<br/>Once added you use contextual range filters like contextual date filters in that you separate "from" and "to" values by a double hyphen, e.g. <strong>http://yoursite.com/yourview/50--149.95</strong> You may omit the from or to values to create open-ended ranges, e.g. <strong>http://yoursite.com/yourview/--149.95</strong> or <strong>http://yoursite.com/yourview/50--</strong> <br/>All filter ranges are inclusive of from and to values. Instead of "<strong>--</strong>" you may use a colon "<strong>:</strong>"')
+    '#description' => t('You must first add contextual filters to your views for them to appear on this page.<br/>Once added you use contextual range filters like contextual date filters in that you separate "from" and "to" values by a double hyphen, e.g. http://yoursite.com/yourview/50--149.95 <br/>You may omit the from or to values to create open-ended ranges, e.g. http://yoursite.com/yourview/--149.95 or http://yoursite.com/yourview/50-- <br/>All filter ranges are inclusive of from and to values. Instead of "<strong>--</strong>" you may use a colon "<strong>:</strong>"')
   );
   $types = array(t('numeric'), t('string'), t('list'));
   $type = reset($types);
@@ -83,7 +83,7 @@ function contextual_range_filter_admin_config() {
     }
     $form['field_names']["contextual_range_filter_$key"] = array(
       '#type' => 'checkboxes',
-      '#title' => t('Select which of the below contextual %type filters should be converted to %type <em>range</em> filters:', array('%type' => $type)),
+      '#title' => t('Select which of the below contextual <strong>@type</strong> filters should be converted to @type <strong>range</strong> filters:', array('@type' => $type)),
       '#default_value' => variable_get("contextual_range_filter_$key", array()),
       '#options' => $options,
       '#description' => t('')
