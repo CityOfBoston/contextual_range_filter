@@ -45,8 +45,8 @@ as a range separator, you can filter your view output like so:
 
   http://yoursite.com/yourview/100--199.99  (numeric range)
   http://yoursite.com/yourotherview/k--qzz  (alphabetical range)
-  http://yoursite.com/somebodysview/4--7    (list range, using list keys)
-  http://yoursite.com/somebodysview/teenager--retiree (list range, using names)
+  http://yoursite.com/somebodysview/3--6    (list range, using list keys)
+  http://yoursite.com/somebodysview/child--middle-aged (list range, using names)
 
 For lists you may use either the keys or the RHS names in the allowed values list
 on the Field settings page, admin/structure/types/manage/<content-type>/fields/<field-type>/field-settings.
@@ -85,8 +85,8 @@ ranges like this:
 
   http://yoursite.com/yourthirdview/a--e~+k--r~/--500
 
-Or, if "Glossary mode" is on, so that only the first letter matters, the above
-becomes:
+Or, if your view has "Glossary mode" is on, so that only the first letter matters,
+the above becomes:
 
   http://yoursite.com/yourthirdview/a--e+k--r/--500
 
@@ -99,3 +99,4 @@ filter:
 
 ASCII AND UTF CHARACTER ORDERING
 o http://en.wikipedia.org/wiki/UTF-8
+
