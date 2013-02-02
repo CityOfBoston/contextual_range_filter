@@ -91,18 +91,18 @@ function contextual_range_filter_build_range_query($views_handler_argument, $fie
       $operator = $is_not ? '!=' : '=';
       $views_handler_argument->query->add_where_expression($group, "$field $operator $placeholder $null_check", array($placeholder => $range));
     }
-    elseif (!empty($from) && !empty($to)) { // from--to
+    elseif ($from != '' && $to != '') { // from--to
       $operator = $is_not ? 'NOT BETWEEN' : 'BETWEEN';
       $placeholder_from = $placeholder;
       $placeholder_to = $views_handler_argument->placeholder();
       $views_handler_argument->query->add_where_expression($group, "$field $operator $placeholder_from AND $placeholder_to $null_check",
         array($placeholder_from => $from, $placeholder_to => $to));
     }
-    elseif (!empty($from)) { // from--
+    elseif ($from != '') { // from--
       $operator = $is_not ? '<' : '>=';
       $views_handler_argument->query->add_where_expression($group, "$field $operator $placeholder $null_check", array($placeholder => $from));
     }
-    elseif (!empty($to)) { // --to
+    elseif ($to != '') { // --to
       $operator = $is_not ? '>' : '<=';
       $views_handler_argument->query->add_where_expression($group, "$field $operator $placeholder $null_check", array($placeholder => $to));
     }

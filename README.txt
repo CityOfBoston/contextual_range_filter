@@ -67,7 +67,7 @@ keys must be integers with an increment of 1.
 
 All ranges are inclusive of "from" and "to" value.
 
-Strings will be case-insensitive, unless your database defaults otherwise. In
+Strings will be CASE-INSENSITIVE, unless your database defaults otherwise. In
 your database's alphabet, numbers and special characters (@ # $ % etc.)
 generally come before letters , e.g. "42nd Street" comes before "Fifth Avenue"
 and also before "5th Avenue". The first printable ASCII character is the space
