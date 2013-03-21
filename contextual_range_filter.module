@@ -16,9 +16,8 @@
  * "Glossary mode" (match on first N characters of a string) is supported.
  */
 
-// @todo use const
-define('CONTEXTUAL_RANGE_FILTER_SEPARATOR1', '--'); // same as used for dates
-define('CONTEXTUAL_RANGE_FILTER_SEPARATOR2', ':');  // alternative delimiter
+const CONTEXTUAL_RANGE_FILTER_SEPARATOR1 = '--'; // same as used for dates
+const CONTEXTUAL_RANGE_FILTER_SEPARATOR2 = ':';  // alternative delimiter
 
 /**
  * Implements hook_help().

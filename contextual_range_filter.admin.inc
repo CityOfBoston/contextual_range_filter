@@ -21,7 +21,7 @@
 function contextual_range_filter_settings($form, $form_state) {
 
   $range_fields = array(
-    'numeric_field_names' => array(), // includes properties like nid
+    'numeric_field_names' => array(), // includes properties like node:nid
     'string_field_names' => array(),  // includes properties like node:title
   );
   $class_path = 'Drupal\views\Plugin\views\argument';
@@ -31,15 +31,13 @@ function contextual_range_filter_settings($form, $form_state) {
 
       if (!empty($display['display_options']['arguments'])) {
 
-        foreach ($display['display_options']['arguments'] as $id => $contextual_filter) {
+        foreach ($display['display_options']['arguments'] as $contextual_filter) {
           
           if ($contextual_filter['table'] == 'search_node_links_to') {
-            // Produces error in views_get_handler() ... @todo
+            // Temporary: produces error in views_get_handler() ... @todo
             continue;
           }
           $argument_handler = views_get_handler($contextual_filter['table'], $contextual_filter['field'], 'argument');
-
-          //$handler = $view->get('executable')->displayHandlers->get($display['id'])->getHandler('argument', $id);
 
           if ($argument_handler) {
 
@@ -52,15 +50,14 @@ function contextual_range_filter_settings($form, $form_state) {
 
             if ($is_numeric_handler || $is_string_handler) {
 
-              // We get one field for every $display.
-              // Should we allow selection per field AND per display ?
-              // Currently we find but don't add the "duplicates".
+              // For every $display we get a number of fields.
+              // Should we allow selection per display AND per field ?
+              // Currently we find --but don't add-- the "duplicates".
 
               $title = $argument_handler->definition['group'] . ':' . $argument_handler->definition['title'];
               $full_name = $contextual_filter['table'] . ':' . $contextual_filter['field'];
 
-              $human_name = $view->get('human_name');
-              $view_name = empty($human_name) ? $view->get('name') : $human_name;
+              $view_name = $view->get('human_name') ?: $view->get('name');
               if (views_view_is_disabled($view)) {
                 $view_name .= ' (' . t('disabled') . ')';
               }
@@ -92,12 +89,11 @@ function contextual_range_filter_settings($form, $form_state) {
       $options[$full_name] = t('%field in view: @views', array(
         '%field' => reset($view_names), '@views' => implode(', ', array_slice($view_names, 1))));
     }
-    $current_field_names = $config->get($key); // returns array or NULL
     $form['field_names'][$key] = array(
       '#type' => 'checkboxes',
       '#title' => t('Select which of the below contextual <strong>@type</strong> filters should be converted to @type <strong>range</strong> filters:', array(
         '@type' => $type)),
-      '#default_value' => empty($current_field_names) ? array() : $current_field_names,
+      '#default_value' => $config->get($key) ?: array(),
       '#options' => $options,
       '#description' => t('')
     );
