@@ -6,7 +6,7 @@
  */
 
 /**
- * Menu callback for selecting which filters should become range filters.
+ * Form builder; configure contextual range filters.
  *
  * From a UI perspective it would make sense to simply have a tick-box on the
  * the Views contextual filter configuration panel. The problem is that at that
@@ -14,53 +14,62 @@
  * This is why we make the user define the contextual filter first, then have
  * them select on this page which contextual filters need to be converted to
  * range filters.
+ *
+ * @ingroup forms
+ * @see contextual_range_filter_settings_sumbit()
  */
-function contextual_range_filter_admin_config() {
+function contextual_range_filter_settings($form, $form_state) {
 
   $range_fields = array(
     'numeric_field_names' => array(), // includes properties like nid
     'string_field_names' => array(),  // includes properties like node:title
-    'list_field_names' => array()     // list keys must be integers
   );
+  $class_path = 'Drupal\views\Plugin\views\argument';
+
   foreach (views_get_all_views() as $view) {
-    foreach ($view->display as $display_id => $display) {
+    foreach ($view->get('display') as $display) {
 
-      if ($view->set_display($display_id)) {
+      if (!empty($display['display_options']['arguments'])) {
 
-        $items = $view->get_items('argument', $display_id);
+        foreach ($display['display_options']['arguments'] as $id => $contextual_filter) {
+          
+          if ($contextual_filter['table'] == 'search_node_links_to') {
+            // Produces error in views_get_handler() ... @todo
+            continue;
+          }
+          $argument_handler = views_get_handler($contextual_filter['table'], $contextual_filter['field'], 'argument');
 
-        foreach ($items as $item) {
+          //$handler = $view->get('executable')->displayHandlers->get($display['id'])->getHandler('argument', $id);
 
-          $table_data = views_fetch_data($item['table']);
-          $field_data = $table_data[$item['field']];
+          if ($argument_handler) {
 
-          if (isset($field_data['argument']['handler'])) {
+            $class = $argument_handler->definition['class'];
 
-            $handler = $field_data['argument']['handler'];
-            $is_numeric_handler = strpos($handler, '_handler_argument_numeric');
-            $is_string_handler  = strpos($handler, '_handler_argument_string');
-            $is_list_handler    = strpos($handler, '_handler_argument_field_list') || strpos($handler , '_handler_argument_list_range');
+            // Does this class extend the Numeric or String classes?
+            // @see views/lib/Drupal/views/Plugin/views/argument/Numeric.php
+            $is_numeric_handler = ($class == "$class_path\Numeric") || is_subclass_of($class, "$class_path\Numeric");
+            $is_string_handler  = ($class == "$class_path\String")  || is_subclass_of($class, "$class_path\String");
 
-            if ($is_numeric_handler || $is_string_handler || $is_list_handler) {
+            if ($is_numeric_handler || $is_string_handler) {
 
-              // We get one field for every $display_id.
+              // We get one field for every $display.
               // Should we allow selection per field AND per display ?
-              // If not, then we can simplify these nested loops...
               // Currently we find but don't add the "duplicates".
-              $title = $field_data['title'];
-              $full_name = $item['table'] . ':' . $item['field'];
-              $view_name = empty($view->human_name) ? $view->name : $view->human_name;
+
+              $title = $argument_handler->definition['group'] . ':' . $argument_handler->definition['title'];
+              $full_name = $contextual_filter['table'] . ':' . $contextual_filter['field'];
+
+              $human_name = $view->get('human_name');
+              $view_name = empty($human_name) ? $view->get('name') : $human_name;
               if (views_view_is_disabled($view)) {
                 $view_name .= ' (' . t('disabled') . ')';
               }
+
               if ($is_numeric_handler) {
                 _contextual_range_filter_add_to_range_fields($range_fields['numeric_field_names'][$full_name], $title, $view_name);
               }
               elseif ($is_string_handler) {
                 _contextual_range_filter_add_to_range_fields($range_fields['string_field_names'][$full_name], $title, $view_name);
-              }
-              elseif ($is_list_handler) {
-                _contextual_range_filter_add_to_range_fields($range_fields['list_field_names'][$full_name], $title, $view_name);
               }
             }
           }
@@ -68,29 +77,46 @@ function contextual_range_filter_admin_config() {
       }
     }
   }
+  $config = config('contextual_range_filter.settings');
+
   $form['field_names'] = array(
     '#type' => 'fieldset',
     '#title' => t('Select contextual filters to be converted to contextual range filters'),
     '#description' => t('You must first add contextual filters to your views for them to appear on this page.<br/>Once added you use contextual range filters like contextual date filters in that you separate "from" and "to" values by a double hyphen, e.g. http://yoursite.com/yourview/50--149.95 <br/>You may omit the from or to values to create open-ended ranges, e.g. http://yoursite.com/yourview/--149.95 or http://yoursite.com/yourview/50-- <br/>All filter ranges are inclusive of from and to values. Instead of "<strong>--</strong>" you may use a colon "<strong>:</strong>"')
   );
-  $types = array(t('numeric'), t('string'), t('list'));
+  $types = array(t('numeric'), t('string'));
   $type = reset($types);
   foreach ($range_fields as $key => $data) {
     $options = array();
-    foreach ($data as $full_field_name => $view_names) {
-      $options[$full_field_name] = t('%field in view: @views', array(
+    foreach ($data as $full_name => $view_names) {
+      $options[$full_name] = t('%field in view: @views', array(
         '%field' => reset($view_names), '@views' => implode(', ', array_slice($view_names, 1))));
     }
-    $form['field_names']["contextual_range_filter_$key"] = array(
+    $current_field_names = $config->get($key); // returns array or NULL
+    $form['field_names'][$key] = array(
       '#type' => 'checkboxes',
-      '#title' => t('Select which of the below contextual <strong>@type</strong> filters should be converted to @type <strong>range</strong> filters:', array('@type' => $type)),
-      '#default_value' => variable_get("contextual_range_filter_$key", array()),
+      '#title' => t('Select which of the below contextual <strong>@type</strong> filters should be converted to @type <strong>range</strong> filters:', array(
+        '@type' => $type)),
+      '#default_value' => empty($current_field_names) ? array() : $current_field_names,
       '#options' => $options,
       '#description' => t('')
     );
     $type = next($types);
   }
-  return system_settings_form($form);
+  return system_config_form($form, $form_state);
+}
+
+/**
+ * Save contextual range filter configuration.
+ *
+ * @ingroup forms
+ * @see contextual_range_filter_settings()
+ */
+function contextual_range_filter_settings_submit($form, &$form_state) {
+  config('contextual_range_filter.settings')
+    ->set('numeric_field_names', $form_state['values']['numeric_field_names'])
+    ->set('string_field_names',  $form_state['values']['string_field_names'])
+    ->save();
 }
 
 function _contextual_range_filter_add_to_range_fields(&$range_field_view_names, $title, $view_name) {

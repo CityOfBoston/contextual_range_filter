@@ -2,19 +2,28 @@
 
 /**
  * @file
- * Contains the numeric argument range validator plugin.
+ * Definition of Drupal\contextual_range_filter\Plugin\views\argument_validator\NumericRange
  */
 
+namespace Drupal\contextual_range_filter\Plugin\views\argument_validator;
+
+use Drupal\Component\Annotation\Plugin;
+use Drupal\Core\Annotation\Translation;
+use Drupal\views\Plugin\views\argument_validator\ArgumentValidatorPluginBase;
+
 /**
- * Validate whether an argument is a number or a numeric range or not.
+ * Validate whether an argument is a numeric range.
  *
  * A valid range is either a valid single number or a range of the form:
- *  xfrom--xto, xfrom-- or --xto
+ *  xfrom--xto  or  xfrom--  or  --xto
  * Instead of the double-hyphen a colon may be used.
  *
- * @ingroup views_argument_validate_plugins
+ * @Plugin(
+ *   id = "numeric_range",
+ *   title = @Translation("Numeric Range")
+ * )
  */
-class contextual_range_filter_plugin_argument_validate_numeric_range extends views_plugin_argument_validate {
+class NumericRange extends ArgumentValidatorPluginBase {
 
   function validate_argument($argument) {
     $ranges = preg_split('/[+ ]/', $argument); // '+' may arrive as space

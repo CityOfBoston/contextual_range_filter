@@ -2,22 +2,31 @@
 
 /**
  * @file
- * Definition of contextual_filter_range_handler_argument_numeric_range.
+ * Definition of Drupal\contextual_range_filter\Plugin\views\argument\NumericRange
  */
+
+namespace Drupal\contextual_range_filter\Plugin\views\argument;
+
+use Drupal\views\Plugin\views\argument\Numeric;
+use Drupal\Component\Annotation\Plugin;
 
 /**
- * Argument handler for arguments that are numeric or numeric ranges.
+ * Argument handler to accept a numeric range.
  *
- * @ingroup views_argument_handlers
+ * @Plugin(
+ *   id = "numeric_range",
+ *   module = "contextual_range_filter"
+ * )
  */
-class contextual_range_filter_handler_argument_numeric_range extends views_handler_argument_numeric {
+class NumericRange extends Numeric {
 
-  function option_definition() {
-    return parent::option_definition();
+  protected function defineOptions() {
+    return parent::defineOptions();
   }
 
-  function options_form(&$form, &$form_state) {
-    parent::options_form($form, $form_state);
+  public function buildOptionsForm(&$form, &$form_state) {
+    parent::buildOptionsForm($form, $form_state);
+
     $form['more']['#collapsed'] = FALSE;
 
     $form['break_phrase']['#title'] = t('Allow multiple numeric ranges');
@@ -39,10 +48,10 @@ class contextual_range_filter_handler_argument_numeric_range extends views_handl
    */
   function title() {
     if (!$this->argument) {
-      return !empty($this->definition['empty field name']) ? $this->definition['empty field name'] : t('Uncategorized');
+      return isset($this->definition['empty field name']) ? $this->definition['empty field name'] : t('Uncategorized');
     }
     if (!empty($this->options['break_phrase'])) {
-      $this->views_break_phrase_range($this->argument);
+      $this->viewsBreakPhraseRange($this->argument);
     }
     else {
       $this->value = array($this->argument);
@@ -57,15 +66,16 @@ class contextual_range_filter_handler_argument_numeric_range extends views_handl
     return implode($this->operator == 'or' ? ' + ' : ', ', $this->title_query());
   }
 
-  function query($group_by = FALSE) {
-    $this->ensure_my_table();
+  public function query($group_by = FALSE) {
+    $this->ensureMyTable();
 
     if (!empty($this->options['break_phrase'])) { // from "Allow multple ranges" checkbox
-      $this->views_break_phrase_range($this->argument);
+      $this->viewsBreakPhraseRange($this->argument);
     }
     else {
       $this->value = array($this->argument);
     }
+    require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'contextual_range_filter') . '/contextual_range_filter.views.inc';
     contextual_range_filter_build_range_query($this);
   }
 
@@ -75,7 +85,7 @@ class contextual_range_filter_handler_argument_numeric_range extends views_handl
    * @param $str
    *   The string to parse.
    */
-  function views_break_phrase_range($str) {
+  function viewsBreakPhraseRange($str) {
     if (empty($str)) {
       return;
     }

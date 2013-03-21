@@ -16,6 +16,7 @@
  * "Glossary mode" (match on first N characters of a string) is supported.
  */
 
+// @todo use const
 define('CONTEXTUAL_RANGE_FILTER_SEPARATOR1', '--'); // same as used for dates
 define('CONTEXTUAL_RANGE_FILTER_SEPARATOR2', ':');  // alternative delimiter
 
@@ -31,6 +32,33 @@ function contextual_range_filter_help($path, $arg) {
       break;
   }
   return empty($t) ? '' : '<p>' . $t . '</p>';
+}
+
+/**
+ * Implements hook_menu().
+ */
+function contextual_range_filter_menu() {
+  $items['admin/config/content/contextual-range-filter'] = array(
+    'title' => 'Contextual Range Filter',
+    'description' => 'Select the contextual filters that are to be converted to contextual <em>range</em> filters.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('contextual_range_filter_settings'),
+    'access arguments' => array('administer contextual range filters'),
+    'file' => 'contextual_range_filter.admin.inc'
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function contextual_range_filter_permission() {
+  return array(
+    'administer contextual range filters' => array(
+      'title' => t('Administer contextual range filters'),
+      'description' => t('Convert contextual filters into contextual <em>range</em> filters.'),
+    )
+  );
 }
 
 /**
@@ -84,41 +112,4 @@ function contextual_range_filter_explode_list_range($range, $allowed_values) {
     }
   }
   return isset($keys) ? $keys : FALSE;
-}
-
-/**
- * Implements hook_menu().
- */
-function contextual_range_filter_menu() {
-  $items['admin/config/content/contextual_range_filter'] = array(
-    'title' => 'Contextual Range Filters',
-    'description' => 'Select which contextual filters need to be converted to contextual <em>range</em> filters.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('contextual_range_filter_admin_config'),
-    'access arguments' => array('administer contextual range filters'),
-    'file' => 'contextual_range_filter.admin.inc'
-  );
-  return $items;
-}
-
-/**
- * Implements hook_permission().
- */
-function contextual_range_filter_permission() {
-  return array(
-    'administer contextual range filters' => array(
-      'title' => t('Administer contextual range filters'),
-      'description' => t('Allow access the Contextual Range Filter configuration page.'),
-    )
-  );
-}
-
-/**
- * Implements hook_views_api().
- */
-function contextual_range_filter_views_api() {
-  return array(
-    'api'  => views_api_version(),
-    'path' => drupal_get_path('module', 'contextual_range_filter') . '/views',
-  );
 }
