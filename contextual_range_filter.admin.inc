@@ -6,11 +6,11 @@
  */
 
 /**
- * Form builder; configure contextual range filters.
+ * Form builder; select contextual range filters.
  *
  * From a UI perspective it would make sense to simply have a tick-box on the
  * the Views contextual filter configuration panel. The problem is that at that
- * point the argument handler class has already been selected and instantiated.
+ * point the argument plugin class has already been selected and instantiated.
  * This is why we make the user define the contextual filter first, then have
  * them select on this page which contextual filters need to be converted to
  * range filters.

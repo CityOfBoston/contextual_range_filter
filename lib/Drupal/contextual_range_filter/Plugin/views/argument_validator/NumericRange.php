@@ -9,7 +9,7 @@ namespace Drupal\contextual_range_filter\Plugin\views\argument_validator;
 
 use Drupal\Component\Annotation\Plugin;
 use Drupal\Core\Annotation\Translation;
-use Drupal\views\Plugin\views\argument_validator\ArgumentValidatorPluginBase;
+use Drupal\views\Plugin\views\argument_validator\Numeric;
 
 /**
  * Validate whether an argument is a numeric range.
@@ -23,7 +23,7 @@ use Drupal\views\Plugin\views\argument_validator\ArgumentValidatorPluginBase;
  *   title = @Translation("Numeric Range")
  * )
  */
-class NumericRange extends ArgumentValidatorPluginBase {
+class NumericRange extends Numeric {
 
   function validate_argument($argument) {
     $ranges = preg_split('/[+ ]/', $argument); // '+' may arrive as space
@@ -34,16 +34,15 @@ class NumericRange extends ArgumentValidatorPluginBase {
         $minmax = explode(CONTEXTUAL_RANGE_FILTER_SEPARATOR2, $range);
       }
       if (count($minmax) < 2) {
-        // Not a range but single value. Must be numeric.
-        if (is_numeric($range)) {
-          continue;
+        // Not a range but single value. Delegate to parent class.
+        if (!parent::validate_argument($argument)) {
+          return FALSE;
         }
-        return FALSE;
       }
-      if (!(
-        (is_numeric($minmax[0]) && is_numeric($minmax[1]) && $minmax[0] <= $minmax[1]) ||
-        (empty($minmax[0]) && is_numeric($minmax[1])) ||
-        (empty($minmax[1]) && is_numeric($minmax[0])))) {
+      elseif (!(
+        (parent::validate_argument($minmax[0]) && parent::validate_argument($minmax[1]) && $minmax[0] <= $minmax[1]) ||
+        (empty($minmax[0]) && parent::validate_argument($minmax[1])) ||
+        (empty($minmax[1]) && parent::validate_argument($minmax[0])))) {
         return FALSE;
       }
     }

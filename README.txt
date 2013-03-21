@@ -38,8 +38,8 @@ output like so:
   http://yoursite.com/somebodysview/child--middle-aged (list range using names is NOT supported in D8)
 
 As can be seen from the examples above, for lists you should use the keys in
-the allowed values list on the Field settings page,
-admin/structure/types/manage/<content-type>/fields/<field-type>/field-settings.
+the "Allowed values list" on the Field settings page,
+admin/structure/types/manage/<content-type>/fields/<field>/field-settings.
 Example:
 
   1|Baby
@@ -85,9 +85,10 @@ filter:
 
   http://yoursite.com/yourthirdview/all/-100--999.99
 
-You can opt to have URL arguments validated as numeric ranges in the fieldset
-titled "When the filter value IS in the URL ...". Tick the "Specify validation 
-criteria" box and select the "Numeric Range" validator in the drop-down.
+You can opt to have URL arguments validated as numeric ranges in the Views UI
+fieldset titled "When the filter value IS in the URL ...". Tick the "Specify
+validation criteria" box and select the "Numeric Range" validator from the
+drop-down.
 
 
 ASCII AND UTF CHARACTER ORDERING

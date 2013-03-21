@@ -75,7 +75,6 @@ class NumericRange extends Numeric {
     else {
       $this->value = array($this->argument);
     }
-    require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'contextual_range_filter') . '/contextual_range_filter.views.inc';
     contextual_range_filter_build_range_query($this);
   }
 
