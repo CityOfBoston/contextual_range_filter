@@ -5,17 +5,17 @@ CONTEXTUAL RANGE FILTER (D8)
 This is a simple plugin for Views that adds the option to contextually filter
 a view not just by a single value, but also by RANGE.
 
-Both numeric (float, integer) and alphabetical (string) ranges are supported, as
-well as lists.
+Just like normal contextual filters, contextual range filters may be set by
+appending filter values to the URL. Examples follow below.
+
+Numeric (float, integer) and alphabetical (string) ranges are supported, as well
+as lists.
 
 Taxonomy term ids, node ids etc are special cases of integers so will work also.
 
 You may use the OR ('+') and the negate operators. You negate by ticking the
 "Exclude" box on the Views Contextual filter configuration panel, in the "More"
 section.
-
-Just like normal contextual filters, contextual range filters may be set by
-appending filter values to the URL.
 
 To create a contextual range filter, first create a plain contextual filter as
 per normal. I.e. in the Views UI open the "Advanced" field set (upper right) and
@@ -28,17 +28,18 @@ admin/config/content/contextual-range-filter, find your contextual filter name
 and tick the box left of it to turn the filter into a contextual range filter.
 Press "Save configuration".
 
-You set your contextual filters by appending "arguments" to the view's URL.
+You apply contextual filters by appending "arguments" to the view's URL.
 Using the double-hyphen '--' as a range separator, you can filter your view
 output like so:
 
   http://yoursite.com/yourview/100--199.99  (numeric range)
   http://yoursite.com/yourotherview/k--qzz  (alphabetical range)
   http://yoursite.com/somebodysview/3--6    (list range, using list keys)
-  http://yoursite.com/somebodysview/child--middle-aged (list range, using names)
+  http://yoursite.com/somebodysview/child--middle-aged (list range using names is NOT supported in D8)
 
-For lists you may use either the keys or the RHS names in the allowed values list
-on the Field settings page, admin/structure/types/manage/<content-type>/fields/<field-type>/field-settings.
+As can be seen from the examples above, for lists you should use the keys in
+the allowed values list on the Field settings page,
+admin/structure/types/manage/<content-type>/fields/<field-type>/field-settings.
 Example:
 
   1|Baby
@@ -50,7 +51,8 @@ Example:
   7|Retiree
 
 The list range order is the order of the allowed values. As far as the
-Contextual Range Filter module is concerned list keys need not be consecutive.
+Contextual Range Filter module is concerned list keys need not be consecutive,
+e.g. "1,2,6,26" is fine.
 
 All ranges are inclusive of "from" and "to" values.
 
@@ -60,7 +62,7 @@ generally come before letters , e.g. "42nd Street" comes before "Fifth Avenue"
 and also before "5th Avenue". The first printable ASCII character is the space
 (%20). The last printable ASCII character is the tilde '~'. So to make sure
 everything from "!Hello" and "@the Races" up to and including anything starting
-with the letter r is returned use " --r~".
+with the letter r is returned, use " --r~".
 
 You may omit the start or end values to specify open-ended filter ranges:
 
@@ -83,7 +85,10 @@ filter:
 
   http://yoursite.com/yourthirdview/all/-100--999.99
 
+You can opt to have URL arguments validated as numeric ranges in the fieldset
+titled "When the filter value IS in the URL ...". Tick the "Specify validation 
+criteria" box and select the "Numeric Range" validator in the drop-down.
+
 
 ASCII AND UTF CHARACTER ORDERING
 o http://en.wikipedia.org/wiki/UTF-8
-

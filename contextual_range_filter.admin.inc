@@ -45,6 +45,8 @@ function contextual_range_filter_settings($form, $form_state) {
 
             // Does this class extend the Numeric or String classes?
             // @see views/lib/Drupal/views/Plugin/views/argument/Numeric.php
+            // Note: lists have a class of Numeric or String so nothing specific
+            //       can be done for lists...
             $is_numeric_handler = ($class == "$class_path\Numeric") || is_subclass_of($class, "$class_path\Numeric");
             $is_string_handler  = ($class == "$class_path\String")  || is_subclass_of($class, "$class_path\String");
 
@@ -55,7 +57,7 @@ function contextual_range_filter_settings($form, $form_state) {
               // Currently we find --but don't add-- the "duplicates".
 
               $title = $argument_handler->definition['group'] . ':' . $argument_handler->definition['title'];
-              $full_name = $contextual_filter['table'] . ':' . $contextual_filter['field'];
+              $machine_name = $contextual_filter['table'] . ':' . $contextual_filter['field'];
 
               $view_name = $view->get('human_name') ?: $view->get('name');
               if (views_view_is_disabled($view)) {
@@ -63,10 +65,10 @@ function contextual_range_filter_settings($form, $form_state) {
               }
 
               if ($is_numeric_handler) {
-                _contextual_range_filter_add_to_range_fields($range_fields['numeric_field_names'][$full_name], $title, $view_name);
+                _contextual_range_filter_add_to_range_fields($range_fields['numeric_field_names'][$machine_name], $title, $view_name);
               }
               elseif ($is_string_handler) {
-                _contextual_range_filter_add_to_range_fields($range_fields['string_field_names'][$full_name], $title, $view_name);
+                _contextual_range_filter_add_to_range_fields($range_fields['string_field_names'][$machine_name], $title, $view_name);
               }
             }
           }
@@ -86,7 +88,7 @@ function contextual_range_filter_settings($form, $form_state) {
   foreach ($range_fields as $key => $data) {
     $options = array();
     foreach ($data as $full_name => $view_names) {
-      $options[$full_name] = t('%field in view: @views', array(
+      $options[$full_name] = t('%field in view(s): @views', array(
         '%field' => reset($view_names), '@views' => implode(', ', array_slice($view_names, 1))));
     }
     $form['field_names'][$key] = array(

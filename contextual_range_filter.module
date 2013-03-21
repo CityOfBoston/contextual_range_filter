@@ -38,7 +38,7 @@ function contextual_range_filter_help($path, $arg) {
  */
 function contextual_range_filter_menu() {
   $items['admin/config/content/contextual-range-filter'] = array(
-    'title' => 'Contextual Range Filter',
+    'title' => 'Contextual Range Filters',
     'description' => 'Select the contextual filters that are to be converted to contextual <em>range</em> filters.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('contextual_range_filter_settings'),
@@ -87,7 +87,7 @@ function contextual_range_filter_split($range) {
  * @param array $allowed_values
  * @return array of keys into $allowed_values array, or FALSE when range 'from'
  *   was not found
- */
+ *
 function contextual_range_filter_explode_list_range($range, $allowed_values) {
   list($from, $to) = contextual_range_filter_split($range);
   $from = strtolower($from);
@@ -112,3 +112,4 @@ function contextual_range_filter_explode_list_range($range, $allowed_values) {
   }
   return isset($keys) ? $keys : FALSE;
 }
+*/
