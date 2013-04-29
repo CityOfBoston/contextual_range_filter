@@ -9,8 +9,8 @@
  * Form builder; select contextual range filters.
  *
  * From a UI perspective it would make sense to simply have a tick-box on the
- * the Views contextual filter configuration panel. The problem is that at that
- * point the argument plugin class has already been selected and instantiated.
+ * the Views UI contextual filter config panel. The problem is that at that
+ * point the plugin class has already been selected and instantiated.
  * This is why we make the user define the contextual filter first, then have
  * them select on this page which contextual filters need to be converted to
  * range filters.
@@ -33,11 +33,7 @@ function contextual_range_filter_settings($form, $form_state) {
 
         foreach ($display['display_options']['arguments'] as $contextual_filter) {
           
-          if ($contextual_filter['table'] == 'search_node_links_to') {
-            // Temporary: produces error in views_get_handler() ... @todo
-            continue;
-          }
-          $argument_handler = views_get_handler($contextual_filter['table'], $contextual_filter['field'], 'argument');
+          $argument_handler = views_get_handler($contextual_filter, 'argument');
 
           if ($argument_handler) {
 
@@ -49,17 +45,17 @@ function contextual_range_filter_settings($form, $form_state) {
             //       can be done for lists...
             $is_numeric_handler = ($class == "$class_path\Numeric") || is_subclass_of($class, "$class_path\Numeric");
             $is_string_handler  = ($class == "$class_path\String")  || is_subclass_of($class, "$class_path\String");
-
+            // IndexTidDepth, IndexTidDepthModifier ?
             if ($is_numeric_handler || $is_string_handler) {
 
               // For every $display we get a number of fields.
               // Should we allow selection per display AND per field ?
-              // Currently we find --but don't add-- the "duplicates".
+              // Currently we find, but don't add, the "duplicates".
 
               $title = $argument_handler->definition['group'] . ':' . $argument_handler->definition['title'];
               $machine_name = $contextual_filter['table'] . ':' . $contextual_filter['field'];
 
-              $view_name = $view->get('human_name') ?: $view->get('name');
+              $view_name = $view->get('label');
               if (views_view_is_disabled($view)) {
                 $view_name .= ' (' . t('disabled') . ')';
               }
