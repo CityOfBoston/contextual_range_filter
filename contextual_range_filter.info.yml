@@ -1,8 +1,9 @@
 name: Contextual Range Filter
+type: module
 description: 'Contextually filter Views by alphabetic, list or numeric ranges, eg http://yoursite.com/yourview/50--99.95'
 package: Views
-version: VERSION
 core: 8.x
+version: VERSION
 configure: admin/config/content/contextual-range-filter
 dependencies:
   - views

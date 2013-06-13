@@ -25,12 +25,13 @@ const CONTEXTUAL_RANGE_FILTER_SEPARATOR2 = ':';  // alternative delimiter
 function contextual_range_filter_help($path, $arg) {
   switch ($path) {
     case 'admin/help#contextual_range_filter':
-      $t = t('Configuration and usage instructions are in this <a href="@README">README</a> file.<br/>Known issues and solutions may be found on the <a href="@contextual_range_filter">Contextual Range Filter</a> project page.', array(
-        '@README' => url(drupal_get_path('module', 'contextual_range_filter') . '/README.txt'),
+      $line1 = t('Configuration and usage instructions with examples can be found in the <a target="readme" href="@README">README</a> file.', array(
+        '@README' => url(drupal_get_path('module', 'contextual_range_filter') . '/README.txt')));
+      $line2 = t('Known issues and solutions may be found on the <a target="project-page" href="@contextual_range_filter">Contextual Range Filter</a> project page.', array(
         '@contextual_range_filter' => url('http://drupal.org/project/contextual_range_filter')));
       break;
   }
-  return empty($t) ? '' : '<p>' . $t . '</p>';
+  return empty($line1) ? '' : '<p>' . $line1 . '</p><p>' . $line2 . '</p>';
 }
 
 /**

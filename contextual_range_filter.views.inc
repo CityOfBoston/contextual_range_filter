@@ -12,7 +12,9 @@ use Drupal\views\Views;
  *
  * Replaces argument handlers by their corresponding RANGE argument handlers.
  *
- * This function finds all field and (node) property argument handlers.
+ * This function finds all field and node property argument handlers and if
+ * they're listed on the Contextual Range Filter configuration page as "to be
+ * converted", swaps in the corresponding string or numeric range handler.
  */
 function contextual_range_filter_views_data_alter(&$data) {
   
