@@ -10,28 +10,33 @@
  *
  *   http://yoursite.com/yourview/100--199.99
  *
- * Integer, float, string and list types are supported.
+ * Date, number, string and list types are supported.
  * The OR ('+') operator is supported.
  * The negate operator ("Exclude" tick box) is supported.
  * "Glossary mode" (match on first N characters of a string) is supported.
  */
 
-const CONTEXTUAL_RANGE_FILTER_SEPARATOR1 = '--'; // same as used for dates
+const CONTEXTUAL_RANGE_FILTER_SEPARATOR1 = '--'; // same as used for date fields
 const CONTEXTUAL_RANGE_FILTER_SEPARATOR2 = ':';  // alternative delimiter
 
 /**
  * Implements hook_help().
  */
 function contextual_range_filter_help($path, $arg) {
+  $help1 = t('You must first add contextual filters in the advanced section of the Views UI before they appear on this <a href="@config_page">configuration</a> page.<br/>When defined contextual range filters are employed like normal contextual filters, i.e. by apppending "arguments" to the URL. You separate "from" and "to" values by a double hyphen, e.g., <em>http://yoursite.com/yourview/50--149.95</em><br/>You may omit the from or to values to create open-ended ranges, e.g., <em>http://yoursite.com/yourview/--149.95</em> or <em>http://yoursite.com/yourview/50--</em><br/>All filter ranges are inclusive of from and to values.<br/>Instead of "<strong>--</strong>" you may use a colon "<strong>:</strong>"', array(
+    '@config_page' => url('/admin/config/content/contextual-range-filter')));
+
   switch ($path) {
+    case 'admin/config/content/contextual-range-filter':
+      return $help1;
+      
     case 'admin/help#contextual_range_filter':
-      $line1 = t('Configuration and usage instructions with examples can be found in the <a target="readme" href="@README">README</a> file.', array(
+      $extra1 = t('Configuration and usage instructions with examples can be found in the <a target="readme" href="@README">README</a> file.', array(
         '@README' => url(drupal_get_path('module', 'contextual_range_filter') . '/README.txt')));
-      $line2 = t('Known issues and solutions may be found on the <a target="project-page" href="@contextual_range_filter">Contextual Range Filter</a> project page.', array(
+      $extra2 = t('Known issues and solutions may be found on the <a target="project-page" href="@contextual_range_filter">Contextual Range Filter</a> project page.', array(
         '@contextual_range_filter' => url('http://drupal.org/project/contextual_range_filter')));
-      break;
+      return $help1 . '<p>' . $extra1 . '</p><p>' . $extra2 . '</p>';
   }
-  return empty($line1) ? '' : '<p>' . $line1 . '</p><p>' . $line2 . '</p>';
 }
 
 /**
@@ -41,10 +46,7 @@ function contextual_range_filter_menu() {
   $items['admin/config/content/contextual-range-filter'] = array(
     'title' => 'Contextual Range Filters',
     'description' => 'Select the contextual filters that are to be converted to contextual <em>range</em> filters.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('contextual_range_filter_settings'),
-    'access arguments' => array('administer contextual range filters'),
-    'file' => 'contextual_range_filter.admin.inc'
+    'route_name' => 'contextual_range_filter_settings',
   );
   return $items;
 }
@@ -64,10 +66,12 @@ function contextual_range_filter_permission() {
 /**
  * Split a filter range string into an array containing "from" and "to" values.
  *
- * @param string $range, format "from--to", "from--" or "--to".
- *   A single value is also allowed. A single colon is accepted instead of --
+ * @param string $range
+ *   typically of the format "from--to", "from--" or "--to", but a single value
+ *   is also allowed. A single colon is accepted instead of --
  *
- * @return array of length 2, the 2nd value equals FALSE when no separator was found
+ * @return array
+ *   array of length 2, the 2nd value equals FALSE when no separator was found
  */
 function contextual_range_filter_split($range) {
   if (is_array($range)) { // defensive programming to make sure we have a string
@@ -83,6 +87,12 @@ function contextual_range_filter_split($range) {
 
 /**
  * Build a range query based on the ranges passed in.
+ *
+ * @param object $views_argument_plugin
+ *   the View's contextual filter plugin 
+ * @param string $field
+ *   the full field name as used in the SQL statement, or NULL
+ *
  */
 function contextual_range_filter_build_range_query($views_argument_plugin, $field = NULL) {
 
@@ -91,14 +101,16 @@ function contextual_range_filter_build_range_query($views_argument_plugin, $fiel
   }
   $real_field = $views_argument_plugin->realField;
   if (!isset($field)) {
-    $field = "$views_argument_plugin->tableAlias.$real_field"; // e.g. field_datafield_price.field_price_value
+    // Example: "field_datafield_price.field_price_value"
+    $field = "$views_argument_plugin->tableAlias.$real_field";
   }
-  $is_not = !empty($views_argument_plugin->options['not']); // from "Exclude: tickbox
+  // $is_not comes from "Exclude" tickbox
+  $is_not = !empty($views_argument_plugin->options['not']); 
   $null_check = $is_not ? "OR $field IS NULL" : '';
 
   // All WHERE clauses are OR-ed or AND-ed together in the same group.
   // Note: NOT (a OR b OR c) == (NOT a) AND (NOT b) AND (NOT c)
-  $group = $views_argument_plugin->query->set_where_group($is_not ? 'AND' : 'OR');
+  $group = $views_argument_plugin->query->setWhereGroup($is_not ? 'AND' : 'OR');
 
   foreach ($views_argument_plugin->value as $range) {
 
@@ -106,24 +118,28 @@ function contextual_range_filter_build_range_query($views_argument_plugin, $fiel
 
     list($from, $to) = contextual_range_filter_split($range);
 
-    if ($to === FALSE) { // single value, not a range
+    if ($to === FALSE) {
+      // Dealing with a single value, not a range
       $operator = $is_not ? '!=' : '=';
-      $views_argument_plugin->query->add_where_expression($group, "$field $operator $placeholder $null_check", array($placeholder => $range));
+      $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder $null_check", array($placeholder => $range));
     }
-    elseif ($from != '' && $to != '') { // from--to
+    elseif ($from != '' && $to != '') {
+      // from--to
       $operator = $is_not ? 'NOT BETWEEN' : 'BETWEEN';
       $placeholder_from = $placeholder;
       $placeholder_to = $views_argument_plugin->query->placeholder($real_field);
-      $views_argument_plugin->query->add_where_expression($group, "$field $operator $placeholder_from AND $placeholder_to $null_check",
+      $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder_from AND $placeholder_to $null_check",
         array($placeholder_from => $from, $placeholder_to => $to));
     }
-    elseif ($from != '') { // from--
+    elseif ($from != '') {
+      // from--
       $operator = $is_not ? '<' : '>=';
-      $views_argument_plugin->query->add_where_expression($group, "$field $operator $placeholder $null_check", array($placeholder => $from));
+      $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder $null_check", array($placeholder => $from));
     }
-    elseif ($to != '') { // --to
+    elseif ($to != '') {
+      // --to
       $operator = $is_not ? '>' : '<=';
-      $views_argument_plugin->query->add_where_expression($group, "$field $operator $placeholder $null_check", array($placeholder => $to));
+      $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder $null_check", array($placeholder => $to));
     }
   }
 }

@@ -1,6 +1,6 @@
-name: Contextual Range Filter
+name: Views Contextual Range Filter
 type: module
-description: 'Contextually filter Views by alphabetic, list or numeric ranges, eg http://yoursite.com/yourview/50--99.95'
+description: 'Contextually filter Views by numeric, alphabetic, date or list ranges, eg http://yoursite.com/yourview/50--99.95'
 package: Views
 core: 8.x
 version: VERSION

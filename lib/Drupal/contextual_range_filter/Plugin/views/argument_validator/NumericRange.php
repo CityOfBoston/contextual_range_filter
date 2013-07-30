@@ -25,9 +25,10 @@ use Drupal\views\Plugin\views\argument_validator\Numeric;
  */
 class NumericRange extends Numeric {
 
-  function validate_argument($argument) {
-    $ranges = preg_split('/[+ ]/', $argument); // '+' may arrive as space
-
+  public function validateArgument($argument) {
+    // Plus sign may arrive as a space, so cover both.
+    $ranges = preg_split('/[+ ]/', $argument);
+    
     foreach ($ranges as $range) {
       $minmax = explode(CONTEXTUAL_RANGE_FILTER_SEPARATOR1, $range);
       if (count($minmax) < 2) {
@@ -35,14 +36,14 @@ class NumericRange extends Numeric {
       }
       if (count($minmax) < 2) {
         // Not a range but single value. Delegate to parent class.
-        if (!parent::validate_argument($argument)) {
+        if (!parent::validateArgument($argument)) {
           return FALSE;
         }
       }
       elseif (!(
-        (parent::validate_argument($minmax[0]) && parent::validate_argument($minmax[1]) && $minmax[0] <= $minmax[1]) ||
-        (empty($minmax[0]) && parent::validate_argument($minmax[1])) ||
-        (empty($minmax[1]) && parent::validate_argument($minmax[0])))) {
+        (parent::validateArgument($minmax[0]) && parent::validateArgument($minmax[1]) && $minmax[0] <= $minmax[1]) ||
+        (empty($minmax[0]) && parent::validateArgument($minmax[1])) ||
+        (empty($minmax[1]) && parent::validateArgument($minmax[0])))) {
         return FALSE;
       }
     }

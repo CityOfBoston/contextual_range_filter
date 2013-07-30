@@ -2,21 +2,18 @@
 
 /**
  * @file
- * Definition of Drupal\contextual_range_filter\Plugin\views\argument\NumericRange
+ * Contains Drupal\contextual_range_filter\Plugin\views\argument\NumericRange
  */
 
 namespace Drupal\contextual_range_filter\Plugin\views\argument;
 
 use Drupal\views\Plugin\views\argument\Numeric;
-use Drupal\Component\Annotation\Plugin;
+use Drupal\Component\Annotation\PluginID;
 
 /**
  * Argument handler to accept a numeric range.
  *
- * @Plugin(
- *   id = "numeric_range",
- *   module = "contextual_range_filter"
- * )
+ * @PluginID("numeric_range")
  */
 class NumericRange extends Numeric {
 
@@ -44,14 +41,14 @@ class NumericRange extends Numeric {
   /**
    * Title override.
    *
-   * Required because of range version of views_break_phrase() in this function.
+   * Required because of range version of breakPhrase() in this function.
    */
-  function title() {
+  public function title() {
     if (!$this->argument) {
       return isset($this->definition['empty field name']) ? $this->definition['empty field name'] : t('Uncategorized');
     }
     if (!empty($this->options['break_phrase'])) {
-      $this->viewsBreakPhraseRange($this->argument);
+      $this->breakPhraseRange($this->argument);
     }
     else {
       $this->value = array($this->argument);
@@ -69,8 +66,9 @@ class NumericRange extends Numeric {
   public function query($group_by = FALSE) {
     $this->ensureMyTable();
 
-    if (!empty($this->options['break_phrase'])) { // from "Allow multple ranges" checkbox
-      $this->viewsBreakPhraseRange($this->argument);
+    // Check "Allow multple ranges" checkbox.
+    if (!empty($this->options['break_phrase'])) { 
+      $this->breakPhraseRange($this->argument);
     }
     else {
       $this->value = array($this->argument);
@@ -84,7 +82,7 @@ class NumericRange extends Numeric {
    * @param $str
    *   The string to parse.
    */
-  function viewsBreakPhraseRange($str) {
+  protected function breakPhraseRange($str) {
     if (empty($str)) {
       return;
     }

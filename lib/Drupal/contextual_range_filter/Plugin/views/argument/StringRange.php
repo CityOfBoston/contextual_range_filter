@@ -2,27 +2,26 @@
 
 /**
  * @file
- * Definition of Drupal\contextual_range_filter\Plugin\views\argument\StringRange
+ * Contains Drupal\contextual_range_filter\Plugin\views\argument\StringRange
  */
 
 namespace Drupal\contextual_range_filter\Plugin\views\argument;
 
 use Drupal\views\Plugin\views\argument\String;
-use Drupal\Component\Annotation\Plugin;
+use Drupal\Component\Annotation\PluginID;
 
 /**
  * Argument handler to accept a string (e.g. alphabetical) range.
  *
- * @Plugin(
- *   id = "string_range",
- *   module = "contextual_range_filter"
- * )
+ * @ingroup views_argument_handlers
+ *
+ * @PluginID("string_range")
  */
 class StringRange extends String {
 
   protected function defineOptions() {
     $options = parent::defineOptions();
-    // Add 'Exclude' tick box as it is not supplied by the String base class
+    // Add 'Exclude' tick box, as it is not supplied by the String base class.
     $options['not'] = array('default' => FALSE, 'bool' => TRUE);
     return $options;
   }
@@ -47,11 +46,12 @@ class StringRange extends String {
   /**
    * Build the query.
    */
-  function query($group_by = FALSE) {
+  public function query($group_by = FALSE) {
     $argument = $this->argument;
     if (!empty($this->options['transform_dash'])) {
       $argument = strtr($argument, '-', ' ');
     }
+    // Check "Allow multple ranges" checkbox.
     if (!empty($this->options['break_phrase'])) {
       $this->breakPhraseString($argument, $this);
     }
@@ -65,7 +65,7 @@ class StringRange extends String {
         $this->helper->formula = TRUE;
       }
       $this->helper->ensureMyTable();
-      $this->helper->add_filter();
+      $this->helper->addFilter();
       return;
     }
 
@@ -73,7 +73,7 @@ class StringRange extends String {
       $field = "$this->tableAlias.$this->realField";
     }
     else {
-      $field = $this->get_formula();
+      $field = $this->getFormula();
     }
     contextual_range_filter_build_range_query($this, $field);
   }

@@ -6,12 +6,11 @@ This is a simple plugin for Views that adds the option to contextually filter
 a view not just by a single value, but also by RANGE.
 
 Just like normal contextual filters, contextual range filters may be set by
-appending filter values to the URL. Examples follow below.
+appending filter "arguments" to the URL. Examples follow below.
 
-Numeric (float, integer) and alphabetical (string) ranges are supported, as well
-as lists.
+Integer, float, string and date ranges are supported, as well as lists.
 
-Taxonomy term ids, node ids etc are special cases of integers so will work also.
+Node ids etc are special cases of integers so will work also.
 
 You may use the OR ('+') and the negate operators. You negate by ticking the
 "Exclude" box on the Views Contextual filter configuration panel, in the "More"
@@ -35,7 +34,8 @@ output like so:
   http://yoursite.com/yourview/100--199.99  (numeric range)
   http://yoursite.com/yourotherview/k--qzz  (alphabetical range)
   http://yoursite.com/somebodysview/3--6    (list range, using list keys)
-  http://yoursite.com/somebodysview/child--middle-aged (list range using names is NOT supported in D8)
+  http://yoursite.com/somebodysview/child--middle-aged (list range using names
+   is NOT supported in D8)
 
 As can be seen from the examples above, for lists you should use the keys in
 the "Allowed values list" on the Field settings page,
@@ -74,8 +74,8 @@ ranges like this:
 
   http://yoursite.com/yourthirdview/a--e~+k--r~/--500
 
-Or, if your view has "Glossary mode" is on, so that only the first letter matters,
-the above becomes:
+Or, if your view has "Glossary mode" is on, so that only the first letter
+matters, the above becomes:
 
   http://yoursite.com/yourthirdview/a--e+k--r/--500
 
