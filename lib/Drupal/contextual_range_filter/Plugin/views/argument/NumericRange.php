@@ -60,7 +60,7 @@ class NumericRange extends Numeric {
     if (empty($this->value)) {
       return !empty($this->definition['empty field name']) ? $this->definition['empty field name'] : t('Uncategorized');
     }
-    return implode($this->operator == 'or' ? ' + ' : ', ', $this->title_query());
+    return implode($this->operator == 'or' ? ' + ' : ', ', $this->titleQuery());
   }
 
   public function query($group_by = FALSE) {

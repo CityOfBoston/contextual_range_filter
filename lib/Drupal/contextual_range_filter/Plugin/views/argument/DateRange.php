@@ -24,7 +24,7 @@ class DateRange extends Date {
    */
   public function init(ViewExecutable $view, DisplayPluginBase $display, array &$options = NULL) {
     parent::init($view, $display, $options);
-    
+ 
     $plugin_id = $options['plugin_id'] ?: 'date_fulldate';
 
     switch ($plugin_id) {
@@ -45,7 +45,7 @@ class DateRange extends Date {
         break;
 
       case 'date_week':
-        $this->format = 'w'; // ?
+        $this->format = 'w';
         $this->argFormat = 'W';
         break;
 
@@ -62,6 +62,9 @@ class DateRange extends Date {
     }
   }
 
+  /**
+   * {@inheritdoc}.
+   */
   protected function defineOptions() {
     $options = parent::defineOptions();
     $options['break_phrase'] = array('default' => FALSE);
@@ -69,6 +72,9 @@ class DateRange extends Date {
     return $options;
   }
 
+  /**
+   * {@inheritdoc}.
+   */
   public function buildOptionsForm(&$form, &$form_state) {
     parent::buildOptionsForm($form, $form_state);
 
@@ -114,6 +120,7 @@ class DateRange extends Date {
     if (empty($this->value)) {
       return !empty($this->definition['empty field name']) ? $this->definition['empty field name'] : t('Uncategorized');
     }
+
     return implode($this->operator == 'or' ? ' + ' : ', ', $this->value);
   }
 
@@ -121,6 +128,7 @@ class DateRange extends Date {
    * Prepare the range query where clause.
    *
    * @param bool $group_by
+   *   whether to apply grouping.
    */
   public function query($group_by = FALSE) {
     $this->ensureMyTable();

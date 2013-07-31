@@ -88,7 +88,9 @@ filter:
 You can opt to have URL arguments validated as numeric ranges in the Views UI
 fieldset titled "When the filter value IS in the URL ...". Tick the "Specify
 validation criteria" box and select the "Numeric Range" validator from the
-drop-down.
+drop-down. Just like core's "Numeric" validator, the "Numeric Range" validator
+must not be selected if the "Allow multiple numeric ranges" box is ticked.
+Instead select "-Basic Validation-".
 
 
 ASCII AND UTF CHARACTER ORDERING

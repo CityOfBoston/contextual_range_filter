@@ -2,6 +2,7 @@
 /**
  * @file
  * contextual_range_filter_views.inc
+ *
  */
 use Drupal\views\Views;
 
@@ -16,9 +17,9 @@ use Drupal\views\Views;
  * plugin.
  */
 function contextual_range_filter_views_data_alter(&$data) {
-  
+
   $config = config('contextual_range_filter.settings');
-  
+
   $date_field_names = array_filter($config->get('date_field_names'));
   $numeric_field_names = array_filter($config->get('numeric_field_names'));
   $string_field_names = array_filter($config->get('string_field_names'));
@@ -29,7 +30,7 @@ function contextual_range_filter_views_data_alter(&$data) {
       foreach ($table_data as $field_name => $field_data) {
         if (isset($field_data['argument']['id'])) {
           // If listed on the configuration page, replace this argument plugin
-          // by its corresponding argument RANGE plugin
+          // by its corresponding argument RANGE plugin.
           $full_name = "$table_name:$field_name";
           if (in_array($full_name, $date_field_names)) {
             $data[$table_name][$field_name]['argument']['id'] = 'date_range';
