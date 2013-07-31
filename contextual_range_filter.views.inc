@@ -1,15 +1,15 @@
 <?php
 /**
  * @file
- * contextual_range_filter_views.inc
+ * contextual_range_filter.views.inc
  *
+ * Implementation of hook_views_data_alter().
  */
-use Drupal\views\Views;
 
 /**
  * Implements hook_views_data_alter().
  *
- * Replaces argument plugins by their corresponding RANGE argument plugins.
+ * Replaces contextual filter plugins by their corresponding RANGE plugins.
  *
  * This function finds all field and node property argument handlers. If
  * they're listed on the Contextual Range Filter configuration page as "to be
@@ -29,8 +29,8 @@ function contextual_range_filter_views_data_alter(&$data) {
     foreach ($data as $table_name => $table_data) {
       foreach ($table_data as $field_name => $field_data) {
         if (isset($field_data['argument']['id'])) {
-          // If listed on the configuration page, replace this argument plugin
-          // by its corresponding argument RANGE plugin.
+          // If listed on the configuration page, replace this contextual filter
+          // plugin by its corresponding contexutal RANGE filter plugin.
           $full_name = "$table_name:$field_name";
           if (in_array($full_name, $date_field_names)) {
             $data[$table_name][$field_name]['argument']['id'] = 'date_range';

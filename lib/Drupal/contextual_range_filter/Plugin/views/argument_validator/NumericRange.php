@@ -2,7 +2,9 @@
 
 /**
  * @file
- * Definition of Drupal\contextual_range_filter\Plugin\views\argument_validator\NumericRange
+ * NumericRange.php
+ *
+ * Drupal\contextual_range_filter\Plugin\views\argument_validator\NumericRange
  */
 
 namespace Drupal\contextual_range_filter\Plugin\views\argument_validator;
@@ -25,10 +27,13 @@ use Drupal\views\Plugin\views\argument_validator\Numeric;
  */
 class NumericRange extends Numeric {
 
+  /**
+   * {@inheritdoc}.
+   */
   public function validateArgument($argument) {
     // Plus sign may arrive as a space, so cover both.
     $ranges = preg_split('/[+ ]/', $argument);
-    
+
     foreach ($ranges as $range) {
       $minmax = explode(CONTEXTUAL_RANGE_FILTER_SEPARATOR1, $range);
       if (count($minmax) < 2) {

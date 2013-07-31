@@ -10,13 +10,13 @@
  *
  *   http://yoursite.com/yourview/100--199.99
  *
- * Date, number, string and list types are supported.
+ * Date, number andstring types are supported. Lists are really numbers.
  * The OR ('+') operator is supported.
  * The negate operator ("Exclude" tick box) is supported.
  * "Glossary mode" (match on first N characters of a string) is supported.
  */
 
-// Use the same separator as for Date fields, plus an alternative.
+// Use the same separator as for Date fields, but allow an alternative also.
 const CONTEXTUAL_RANGE_FILTER_SEPARATOR1 = '--';
 const CONTEXTUAL_RANGE_FILTER_SEPARATOR2 = ':';
 
@@ -30,7 +30,7 @@ function contextual_range_filter_help($path, $arg) {
   switch ($path) {
     case 'admin/config/content/contextual-range-filter':
       return $help1;
- 
+
     case 'admin/help#contextual_range_filter':
       $extra1 = t('Configuration and usage instructions with examples can be found in the <a target="readme" href="@README">README</a> file.', array(
         '@README' => url(drupal_get_path('module', 'contextual_range_filter') . '/README.txt')));

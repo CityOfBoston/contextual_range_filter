@@ -19,6 +19,9 @@ use Drupal\Component\Annotation\PluginID;
  */
 class StringRange extends String {
 
+  /**
+   * {@inheritdoc}.
+   */
   protected function defineOptions() {
     $options = parent::defineOptions();
     // Add 'Exclude' tick box, as it is not supplied by the String base class.
@@ -26,9 +29,12 @@ class StringRange extends String {
     return $options;
   }
 
+  /**
+   * {@inheritdoc}.
+   */
   public function buildOptionsForm(&$form, &$form_state) {
     parent::buildOptionsForm($form, $form_state);
-    
+
     $form['more']['#collapsed'] = FALSE;
 
     $form['break_phrase']['#title'] = t('Allow multiple string (e.g. alphabetic) ranges');

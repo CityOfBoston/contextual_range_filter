@@ -60,28 +60,31 @@ class ContextualRangeFilterAssignmentForm extends SystemConfigFormBase {
             // contextual filter classes?
             // Note: lists have a class of Numeric or String, so nothing special
             // needs or can be done for lists...
-            // @see views/lib/Drupal/views/Plugin/views/argument/Numeric.php
             $is_date_handler = is_a($class, "$class_path\Date", TRUE);
-            $is_numeric_handler = is_a($class, "$class_path\Numeric", TRUE);
+            $is_numeric_handler = is_a($class, "$class_path\Numeric", TRUE) 
+              || is_a($class, 'Drupal\comment\Plugin\views\argument\UserUid', TRUE);
+            //  || is_a($class, 'Drupal\taxonomy\Plugin\views\argument\IndexTidDepth', TRUE)
+            //  || is_a($class, 'Drupal\taxonomy\Plugin\views\argument\IndexTidDepthModifier', TRUE)
+            //  || is_a($class, 'Drupal\views\Plugin\views\argument\ManyToOne', TRUE);
             $is_string_handler = is_a($class, "$class_path\String", TRUE);
-
-            // @todo: IndexTidDepth, IndexTidDepthModifier...
 
             if ($is_date_handler || $is_numeric_handler || $is_string_handler) {
 
               // For every View $display we get a number of fields.
               // Should we allow selection per display AND per field?
               // Currently we find, but don't add, the "duplicates".
-
               // @todo: Find something more human-readible than this.
               $title = "$plugin_id: " . $contextual_filter['id'];
 
+              // @todod Taxonomy term depth has Views machine name
+              // "taxonomy_term_data:tid", not "node:term_node_tid_depth".
               $machine_name = $contextual_filter['table'] . ':' . $contextual_filter['field'];
+
               $view_name = $view->get('label');
               if (views_view_is_disabled($view)) {
                 $view_name .= ' (' . t('disabled') . ')';
               }
-
+              
               if ($is_date_handler) {
                 $this->addToRangeFields($range_fields['date_field_names'][$machine_name], $title, $view_name);
               }
@@ -99,6 +102,7 @@ class ContextualRangeFilterAssignmentForm extends SystemConfigFormBase {
     $form['field_names'] = array(
       '#type' => 'fieldset',
       '#title' => t('Select contextual filters to be converted to contextual range filters'),
+      '#description' => t('<strong>Note:</strong> you may have to re-save the corresponding Views after you have changed your selection.'),
     );
     $config = config('contextual_range_filter.settings');
     $types = array(t('date'), t('numeric'), t('string'));
@@ -115,7 +119,6 @@ class ContextualRangeFilterAssignmentForm extends SystemConfigFormBase {
           '@type' => $type)),
         '#default_value' => $config->get($key) ?: array(),
         '#options' => $options,
-        '#description' => t('<strong>Note:</strong> you may have to re-save the corresponding Views after you have changed your selection.')
       );
       $type = next($types);
     }
@@ -132,8 +135,8 @@ class ContextualRangeFilterAssignmentForm extends SystemConfigFormBase {
       ->set('numeric_field_names', array_filter($form_state['values']['numeric_field_names']))
       ->set('string_field_names', array_filter($form_state['values']['string_field_names']))
       ->save();
-
     parent::submitForm($form, $form_state);
+    // Save corresponding changed Views here?
   }
 
   /**

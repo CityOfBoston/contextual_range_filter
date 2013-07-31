@@ -84,7 +84,7 @@ class DateRange extends Date {
     $form['break_phrase'] = array(
       '#type' => 'checkbox',
       '#title' => t('Allow multiple date ranges'),
-      '#description' =>  t('If selected, multiple ranges may be specified by stringing them together with plus signs.<br/>Example: <strong>19990101--20051231+20130701--20140630</strong>'),
+      '#description' => t('If selected, multiple date ranges may be specified by stringing them together with plus signs.<br/>Example: <strong>19990101--20051231+20130701--20140630</strong>'),
       '#default_value' => $this->options['break_phrase'],
       '#fieldset' => 'more',
     );
@@ -105,7 +105,7 @@ class DateRange extends Date {
    */
   public function title() {
     if (!$this->argument) {
-      return !empty($this->definition['empty field name']) ? $this->definition['empty field name'] : t('Uncategorized');
+      return $this->definition['empty field name'] ?: t('Uncategorized');
     }
     if (!empty($this->options['break_phrase'])) {
       $this->breakPhraseRange($this->argument);
@@ -115,10 +115,10 @@ class DateRange extends Date {
       $this->operator = 'or';
     }
     if ($this->value === FALSE) {
-      return !empty($this->definition['invalid input']) ? $this->definition['invalid input'] : t('Invalid input');
+      return $this->definition['invalid input'] ?: t('Invalid input');
     }
     if (empty($this->value)) {
-      return !empty($this->definition['empty field name']) ? $this->definition['empty field name'] : t('Uncategorized');
+      return $this->definition['empty field name'] ?: t('Uncategorized');
     }
 
     return implode($this->operator == 'or' ? ' + ' : ', ', $this->value);
