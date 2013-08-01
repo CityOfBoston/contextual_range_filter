@@ -61,7 +61,7 @@ class ContextualRangeFilterAssignmentForm extends SystemConfigFormBase {
             // Note: lists have a class of Numeric or String, so nothing special
             // needs or can be done for lists...
             $is_date_handler = is_a($class, "$class_path\Date", TRUE);
-            $is_numeric_handler = is_a($class, "$class_path\Numeric", TRUE) 
+            $is_numeric_handler = is_a($class, "$class_path\Numeric", TRUE)
               || is_a($class, 'Drupal\comment\Plugin\views\argument\UserUid', TRUE);
             //  || is_a($class, 'Drupal\taxonomy\Plugin\views\argument\IndexTidDepth', TRUE)
             //  || is_a($class, 'Drupal\taxonomy\Plugin\views\argument\IndexTidDepthModifier', TRUE)
@@ -84,7 +84,7 @@ class ContextualRangeFilterAssignmentForm extends SystemConfigFormBase {
               if (views_view_is_disabled($view)) {
                 $view_name .= ' (' . t('disabled') . ')';
               }
-              
+
               if ($is_date_handler) {
                 $this->addToRangeFields($range_fields['date_field_names'][$machine_name], $title, $view_name);
               }
@@ -129,7 +129,7 @@ class ContextualRangeFilterAssignmentForm extends SystemConfigFormBase {
    * {@inheritdoc}.
    */
   public function submitForm(array &$form, array &$form_state) {
-    
+
     // Clear out stuff we're not interested with.
     form_state_values_clean($form_state);
 
@@ -138,7 +138,7 @@ class ContextualRangeFilterAssignmentForm extends SystemConfigFormBase {
     foreach ($form_state['values'] as $type => $filters) {
       // Clear out the unticked boxes.
       $filters = array_filter($form_state['values'][$type]);
-      
+
       $prev_filters = $config->get($type);
       $added_filters = array_diff($filters, $prev_filters);
       $removed_filters = array_diff($prev_filters, $filters);

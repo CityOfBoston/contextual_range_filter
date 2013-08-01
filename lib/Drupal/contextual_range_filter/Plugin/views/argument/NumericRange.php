@@ -18,7 +18,7 @@ use Drupal\Component\Annotation\PluginID;
  * @PluginID("numeric_range")
  */
 class NumericRange extends Numeric {
-  
+
   /**
    * {@inheritdoc}.
    */

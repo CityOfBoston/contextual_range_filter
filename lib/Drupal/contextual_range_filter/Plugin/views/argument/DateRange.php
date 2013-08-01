@@ -24,7 +24,7 @@ class DateRange extends Date {
    */
   public function init(ViewExecutable $view, DisplayPluginBase $display, array &$options = NULL) {
     parent::init($view, $display, $options);
- 
+
     $plugin_id = $options['plugin_id'] ?: 'date_fulldate';
 
     switch ($plugin_id) {
