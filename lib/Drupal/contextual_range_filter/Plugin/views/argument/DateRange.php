@@ -78,6 +78,8 @@ class DateRange extends Date {
   public function buildOptionsForm(&$form, &$form_state) {
     parent::buildOptionsForm($form, $form_state);
 
+    $form['description']['#markup'] = t('Contextual date range filter values are taken from the URL.');
+
     $form['more']['#collapsed'] = FALSE;
 
     // Allow passing multiple values.

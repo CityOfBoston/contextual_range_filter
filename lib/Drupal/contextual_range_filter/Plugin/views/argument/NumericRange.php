@@ -25,6 +25,8 @@ class NumericRange extends Numeric {
   public function buildOptionsForm(&$form, &$form_state) {
     parent::buildOptionsForm($form, $form_state);
 
+    $form['description']['#markup'] = t('Contextual range filter values are taken from the URL.');
+
     $form['more']['#collapsed'] = FALSE;
 
     $form['break_phrase']['#title'] = t('Allow multiple numeric ranges');

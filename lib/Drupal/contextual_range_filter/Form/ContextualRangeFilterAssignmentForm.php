@@ -102,27 +102,26 @@ class ContextualRangeFilterAssignmentForm extends SystemConfigFormBase {
     $form['field_names'] = array(
       '#type' => 'fieldset',
       '#title' => t('Select contextual filters to be converted to contextual range filters'),
-      '#description' => t('<strong>Note:</strong> you may have to re-save the corresponding Views after you have changed your selection.'),
     );
     $config = config('contextual_range_filter.settings');
-    $types = array(t('date'), t('numeric'), t('string'));
-    $type = reset($types);
-    foreach ($range_fields as $key => $data) {
+    $labels = array(t('date'), t('numeric'), t('string'));
+    $label = reset($labels);
+    foreach ($range_fields as $type => $data) {
       $options = array();
       foreach ($data as $full_name => $view_names) {
         $options[$full_name] = t('%field in view(s): @views', array(
           '%field' => reset($view_names), '@views' => implode(', ', array_slice($view_names, 1))));
+        $form['#view_names'][$full_name] = array_slice($view_names, 1);
       }
-      $form['field_names'][$key] = array(
+      $form['field_names'][$type] = array(
         '#type' => 'checkboxes',
-        '#title' => t('Select which of the below contextual <strong>@type</strong> filters should be converted to @type <strong>range</strong> filters:', array(
-          '@type' => $type)),
-        '#default_value' => $config->get($key) ?: array(),
+        '#title' => t('Select which of the below contextual <em>@label</em> filters should be converted to <em>@label range</em> filters:', array(
+          '@label' => $label)),
+        '#default_value' => $config->get($type) ?: array(),
         '#options' => $options,
       );
-      $type = next($types);
+      $label = next($labels);
     }
-
     return parent::buildForm($form, $form_state);
   }
 
@@ -130,13 +129,41 @@ class ContextualRangeFilterAssignmentForm extends SystemConfigFormBase {
    * {@inheritdoc}.
    */
   public function submitForm(array &$form, array &$form_state) {
-    $this->configFactory->get('contextual_range_filter.settings')
-      ->set('date_field_names', array_filter($form_state['values']['date_field_names']))
-      ->set('numeric_field_names', array_filter($form_state['values']['numeric_field_names']))
-      ->set('string_field_names', array_filter($form_state['values']['string_field_names']))
-      ->save();
+    
+    // Clear out stuff we're not interested with.
+    form_state_values_clean($form_state);
+
+    $config = $this->configFactory->get('contextual_range_filter.settings');
+
+    foreach ($form_state['values'] as $type => $filters) {
+      // Clear out the unticked boxes.
+      $filters = array_filter($form_state['values'][$type]);
+      
+      $prev_filters = $config->get($type);
+      $added_filters = array_diff($filters, $prev_filters);
+      $removed_filters = array_diff($prev_filters, $filters);
+      $changed_filters = array_merge($added_filters, $removed_filters);
+
+      if (empty($changed_filters)) {
+        continue;
+      }
+      $config->set($type, $filters);
+
+      // Find corresponding Views and save them.
+      $changed_view_names = array();
+      foreach ($changed_filters as $filter_name) {
+        $changed_view_names = array_merge($changed_view_names, $form['#view_names'][$filter_name]);
+      }
+      foreach (views_get_all_views() as $view) {
+        $view_name = $view->get('label');
+        if (in_array($view_name, $changed_view_names)) {
+          drupal_set_message(t('Updated contextual filter(s) on view %view_name.', array('%view_name' => $view_name)));
+          $view->save();
+        }
+      }
+    }
+    $config->save();
     parent::submitForm($form, $form_state);
-    // Save corresponding changed Views here?
   }
 
   /**
