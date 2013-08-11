@@ -20,9 +20,9 @@ function contextual_range_filter_views_data_alter(&$data) {
 
   $config = config('contextual_range_filter.settings');
 
-  $date_field_names = array_filter($config->get('date_field_names'));
-  $numeric_field_names = array_filter($config->get('numeric_field_names'));
-  $string_field_names = array_filter($config->get('string_field_names'));
+  $date_field_names = array_filter($config->get('date_field_names') ?: array());
+  $numeric_field_names = array_filter($config->get('numeric_field_names') ?: array());
+  $string_field_names = array_filter($config->get('string_field_names') ?: array());
 
   if (!empty($date_field_names) || !empty($numeric_field_names) || !empty($string_field_names)) {
 

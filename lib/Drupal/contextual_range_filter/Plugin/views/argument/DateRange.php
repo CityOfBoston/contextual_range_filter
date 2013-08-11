@@ -10,7 +10,7 @@ namespace Drupal\contextual_range_filter\Plugin\views\argument;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Plugin\views\argument\Date;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
-use Drupal\Component\Annotation\PluginId;
+use Drupal\Component\Annotation\PluginID;
 
 /**
  * Argument handler to accept a date range.

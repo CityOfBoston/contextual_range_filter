@@ -103,6 +103,7 @@ class ContextualRangeFilterAssignmentForm extends SystemConfigFormBase {
       '#type' => 'fieldset',
       '#title' => t('Select contextual filters to be converted to contextual range filters'),
     );
+  //$config = $this->configFactory->get('contextual_range_filter.settings');
     $config = config('contextual_range_filter.settings');
     $labels = array(t('date'), t('numeric'), t('string'));
     $label = reset($labels);
@@ -139,7 +140,7 @@ class ContextualRangeFilterAssignmentForm extends SystemConfigFormBase {
       // Clear out the unticked boxes.
       $filters = array_filter($form_state['values'][$type]);
 
-      $prev_filters = $config->get($type);
+      $prev_filters = $config->get($type) ?: array();
       $added_filters = array_diff($filters, $prev_filters);
       $removed_filters = array_diff($prev_filters, $filters);
       $changed_filters = array_merge($added_filters, $removed_filters);
