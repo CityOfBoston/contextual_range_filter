@@ -2,29 +2,32 @@
 
 /**
  * @file
- * NumericRange.php
+ * NumericRangeArgument.php
  * 
- * Contains Drupal\contextual_range_filter\Plugin\views\argument\NumericRange
+ * Contains Drupal\contextual_range_filter\Plugin\views\argument\NumericRangeArgument
  */
 
 namespace Drupal\contextual_range_filter\Plugin\views\argument;
 
-use Drupal\views\Plugin\views\argument\Numeric;
 use Drupal\Component\Annotation\PluginID;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\views\Plugin\views\argument\NumericArgument;
 
 /**
- * Argument handler to accept a numeric range.
+ * Argument handler to accept a vocabulary id.
  *
- * @PluginID("numeric_range")
+ * @ingroup views_argument_handlers
+ *
+ * @ViewsArgument("numeric_range")
  */
-class NumericRange extends Numeric {
+
+class NumericRangeArgument extends NumericArgument {
 
   /**
    * {@inheritdoc}.
    */
-  public function buildOptionsForm(&$form, &$form_state) {
+  public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
-
     $form['description']['#markup'] = t('Contextual range filter values are taken from the URL.');
 
     $form['more']['#collapsed'] = FALSE;

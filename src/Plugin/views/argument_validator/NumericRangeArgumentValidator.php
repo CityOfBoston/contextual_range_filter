@@ -2,16 +2,16 @@
 
 /**
  * @file
- * NumericRange.php
+ * NumericRangeArgumentValidator.php
  *
- * Drupal\contextual_range_filter\Plugin\views\argument_validator\NumericRange
+ * Drupal\contextual_range_filter\Plugin\views\argument_validator\NumericRangeArgumentValidator
  */
 
 namespace Drupal\contextual_range_filter\Plugin\views\argument_validator;
 
 use Drupal\Component\Annotation\Plugin;
 use Drupal\Core\Annotation\Translation;
-use Drupal\views\Plugin\views\argument_validator\Numeric;
+use Drupal\views\Plugin\views\argument_validator\NumericArgumentValidator;
 
 /**
  * Validate whether an argument is a numeric range.
@@ -25,7 +25,7 @@ use Drupal\views\Plugin\views\argument_validator\Numeric;
  *   title = @Translation("Numeric Range")
  * )
  */
-class NumericRange extends Numeric {
+class NumericRangeArgumentValidator extends NumericArgumentValidator {
 
   /**
    * {@inheritdoc}.
