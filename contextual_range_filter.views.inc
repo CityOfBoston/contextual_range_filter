@@ -18,7 +18,7 @@
  */
 function contextual_range_filter_views_data_alter(&$data) {
 
-  $config = config('contextual_range_filter.settings');
+  $config = \Drupal::config('contextual_range_filter.settings');
 
   $date_field_names = array_filter($config->get('date_field_names') ?: array());
   $numeric_field_names = array_filter($config->get('numeric_field_names') ?: array());

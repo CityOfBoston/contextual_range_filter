@@ -4,6 +4,6 @@ description: 'Contextually filter Views by numeric, alphabetic, date or list ran
 package: Views
 core: 8.x
 version: VERSION
-configure: admin/config/content/contextual-range-filter
+configure: contextual_range_filter.settings
 dependencies:
   - views

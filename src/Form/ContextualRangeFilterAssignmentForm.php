@@ -7,7 +7,8 @@
 
 namespace Drupal\contextual_range_filter\Form;
 
-use Drupal\system\SystemConfigFormBase;
+use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Convert selected contextual filters to contextual range filters.
@@ -19,7 +20,7 @@ use Drupal\system\SystemConfigFormBase;
  * them select on this page which contextual filters need to be converted to
  * range filters.
  */
-class ContextualRangeFilterAssignmentForm extends SystemConfigFormBase {
+class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
 
   /**
    * {@inheritdoc}.
@@ -27,11 +28,16 @@ class ContextualRangeFilterAssignmentForm extends SystemConfigFormBase {
   public function getFormID() {
     return 'contextual_range_filter_settings';
   }
+  protected function getEditableConfigNames() {
+    return [
+      'contextual_range_filter.settings',
+    ];
+  }
 
   /**
    * {@inheritdoc}.
    */
-  public function buildForm(array $form, array &$form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state) {
     $range_fields = array(
       'date_field_names' => array(),
       'numeric_field_names' => array(),
@@ -129,7 +135,7 @@ class ContextualRangeFilterAssignmentForm extends SystemConfigFormBase {
   /**
    * {@inheritdoc}.
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
 
     // Clear out stuff we're not interested with.
     form_state_values_clean($form_state);
