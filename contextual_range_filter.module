@@ -34,12 +34,12 @@ function contextual_range_filter_help($route_name, RouteMatchInterface $route_ma
         ':one' => Url::fromRoute('contextual_range_filter.settings')->toString(),
       ];
       $help1 = t('You must first add contextual filters in the advanced section of the Views UI before they appear on this <a href=":one">configuration</a> page.<br/>When defined contextual range filters are employed like normal contextual filters, i.e. by apppending "arguments" to the URL. You separate "from" and "to" values by a double hyphen, e.g., <em>http://yoursite.com/yourview/50--149.95</em><br/>You may omit the from or to values to create open-ended ranges, e.g., <em>http://yoursite.com/yourview/--149.95</em> or <em>http://yoursite.com/yourview/50--</em><br/>All filter ranges are inclusive of from and to values.<br/>Instead of "<strong>--</strong>" you may use a colon "<strong>:</strong>"', $options);
-      $extra_one_options = [
-        ':README' => url(drupal_get_path('module', 'contextual_range_filter') . '/README.txt'),
+      $extra1_options = [
+        ':README' => Url::fromUri('internal:/' . drupal_get_path('module', 'contextual_range_filter') . '/README.txt')->toString(),
       ];
       $extra1 = t('Configuration and usage instructions with examples can be found in the <a target="readme" href=":README">README</a> file.', $extra1_options);
       $extra2_options = [
-        ':contextual_range_filter' => url('http://drupal.org/project/contextual_range_filter'),
+        ':contextual_range_filter' => Url::fromUri('http://drupal.org/project/contextual_range_filter')->toString(),
       ];
       $extra2 = t('Known issues and solutions may be found on the <a target="project-page" href=":contextual_range_filter">Views Contextual Range Filter</a> project page.', $extra2_options);
       return $help1 . '<p>' . $extra1 . '</p><p>' . $extra2 . '</p>';
