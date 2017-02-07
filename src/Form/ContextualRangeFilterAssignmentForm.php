@@ -44,10 +44,13 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
       'string_field_names' => array(),
     );
     $class_path = 'Drupal\views\Plugin\views\argument';
+    $plugin_data = [];
+    foreach (\Drupal\views\ViewExecutable::getPluginTypes() as $plugin_type) {
+      $plugin_data[$plugin_type] = \Drupal\views\Views::pluginManager($plugin_type)->getDefinitions();
+    }
+    //$plugin_data = views_get_plugin_definitions();
 
-    $plugin_data = views_get_plugin_definitions();
-
-    foreach (views_get_all_views() as $view) {
+    foreach (\Drupal::entityTypeManager()->getStorage('view')->loadMultiple() as $view) {
 
       foreach ($view->get('display') as $display) {
 
@@ -67,12 +70,8 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
             // Note: lists have a class of Numeric or String, so nothing special
             // needs or can be done for lists...
             $is_date_handler = is_a($class, "$class_path\Date", TRUE);
-            $is_numeric_handler = is_a($class, "$class_path\Numeric", TRUE)
-              || is_a($class, 'Drupal\comment\Plugin\views\argument\UserUid', TRUE);
-            //  || is_a($class, 'Drupal\taxonomy\Plugin\views\argument\IndexTidDepth', TRUE)
-            //  || is_a($class, 'Drupal\taxonomy\Plugin\views\argument\IndexTidDepthModifier', TRUE)
-            //  || is_a($class, 'Drupal\views\Plugin\views\argument\ManyToOne', TRUE);
-            $is_string_handler = is_a($class, "$class_path\String", TRUE);
+            $is_numeric_handler = is_a($class, "$class_path\NumericArgument", TRUE);
+            $is_string_handler = is_a($class, "$class_path\StringArgument", TRUE);
 
             if ($is_date_handler || $is_numeric_handler || $is_string_handler) {
 
@@ -88,7 +87,7 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
 
               $view_name = $view->get('label');
               if (views_view_is_disabled($view)) {
-                $view_name .= ' (' . t('disabled') . ')';
+                $view_name .= ' (' . $this->t('disabled') . ')';
               }
 
               if ($is_date_handler) {
@@ -107,22 +106,24 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
     }
     $form['field_names'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Select contextual filters to be converted to contextual range filters'),
+      '#title' => $this->t('Select contextual filters to be converted to contextual range filters'),
     );
-  //$config = $this->configFactory->get('contextual_range_filter.settings');
-    $config = config('contextual_range_filter.settings');
-    $labels = array(t('date'), t('numeric'), t('string'));
+    $config = $this->configFactory->get('contextual_range_filter.settings');
+    $labels = array(t('date'), $this->t('numeric'), $this->t('string'));
     $label = reset($labels);
     foreach ($range_fields as $type => $data) {
       $options = array();
       foreach ($data as $full_name => $view_names) {
-        $options[$full_name] = t('%field in view(s): @views', array(
-          '%field' => reset($view_names), '@views' => implode(', ', array_slice($view_names, 1))));
+        $replace = [
+          '%field' => reset($view_names),
+          '@views' => implode(', ', array_slice($view_names, 1)),
+        ];
+        $options[$full_name] = $this->t('%field in view(s): @views', $replace);
         $form['#view_names'][$full_name] = array_slice($view_names, 1);
       }
       $form['field_names'][$type] = array(
         '#type' => 'checkboxes',
-        '#title' => t('Select which of the below contextual <em>@label</em> filters should be converted to <em>@label range</em> filters:', array(
+        '#title' => $this->t('Select which of the below contextual <em>@label</em> filters should be converted to <em>@label range</em> filters:', array(
           '@label' => $label)),
         '#default_value' => $config->get($type) ?: array(),
         '#options' => $options,
@@ -138,13 +139,13 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
     // Clear out stuff we're not interested with.
-    form_state_values_clean($form_state);
+    //form_state_values_clean($form_state);
 
-    $config = $this->configFactory->get('contextual_range_filter.settings');
+    $config = $this->configFactory->getEditable('contextual_range_filter.settings');
 
-    foreach ($form_state['values'] as $type => $filters) {
+    foreach ($form_state->getValues() as $type => $filters) {
       // Clear out the unticked boxes.
-      $filters = array_filter($form_state['values'][$type]);
+      $filters = array_filter($form_state->getValue($type));
 
       $prev_filters = $config->get($type) ?: array();
       $added_filters = array_diff($filters, $prev_filters);
@@ -161,7 +162,7 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
       foreach ($changed_filters as $filter_name) {
         $changed_view_names = array_merge($changed_view_names, $form['#view_names'][$filter_name]);
       }
-      foreach (views_get_all_views() as $view) {
+      foreach (\Drupal::entityTypeManager()->getStorage('view')->loadMultiple() as $view) {
         $view_name = $view->get('label');
         if (in_array($view_name, $changed_view_names)) {
           drupal_set_message(t('Updated contextual filter(s) on view %view_name.', array('%view_name' => $view_name)));
