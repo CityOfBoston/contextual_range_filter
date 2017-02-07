@@ -48,16 +48,11 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
     foreach (\Drupal\views\ViewExecutable::getPluginTypes() as $plugin_type) {
       $plugin_data[$plugin_type] = \Drupal\views\Views::pluginManager($plugin_type)->getDefinitions();
     }
-    //$plugin_data = views_get_plugin_definitions();
 
     foreach (\Drupal::entityTypeManager()->getStorage('view')->loadMultiple() as $view) {
-
       foreach ($view->get('display') as $display) {
-
         if (!empty($display['display_options']['arguments'])) {
-
           foreach ($display['display_options']['arguments'] as $contextual_filter) {
-
             if (empty($contextual_filter['plugin_id'])) {
               // E.g., search back links.
               continue;
@@ -70,9 +65,9 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
             // Note: lists have a class of Numeric or String, so nothing special
             // needs or can be done for lists...
             $is_date_handler = is_a($class, "$class_path\Date", TRUE);
-            $is_numeric_handler = is_a($class, "$class_path\NumericArgument", TRUE);
+          //  $is_numeric_handler = is_a($class, "$class_path\NumericArgument", TRUE);
             $is_string_handler = is_a($class, "$class_path\StringArgument", TRUE);
-
+            $is_numeric_handler = !$is_date_handler && !$is_string_handler;
             if ($is_date_handler || $is_numeric_handler || $is_string_handler) {
 
               // For every View $display we get a number of fields.
@@ -109,7 +104,7 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
       '#title' => $this->t('Select contextual filters to be converted to contextual range filters'),
     );
     $config = $this->configFactory->get('contextual_range_filter.settings');
-    $labels = array(t('date'), $this->t('numeric'), $this->t('string'));
+    $labels = array($this->t('date'), $this->t('numeric'), $this->t('string'));
     $label = reset($labels);
     foreach ($range_fields as $type => $data) {
       $options = array();
@@ -130,6 +125,9 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
       );
       $label = next($labels);
     }
+    $element['#cache']['tags'] = $config->getCacheTags();
+    $form[] = $element;
+     
     return parent::buildForm($form, $form_state);
   }
 
@@ -137,17 +135,15 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
    * {@inheritdoc}.
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-
     // Clear out stuff we're not interested with.
-    //form_state_values_clean($form_state);
-
+    $types = ['numeric', 'string', 'date'];
     $config = $this->configFactory->getEditable('contextual_range_filter.settings');
-
-    foreach ($form_state->getValues() as $type => $filters) {
+    foreach ($types as $type) {
+      $field_names = $type . '_field_names';
+      $range_type = $type . '_range';
       // Clear out the unticked boxes.
-      $filters = array_filter($form_state->getValue($type));
-
-      $prev_filters = $config->get($type) ?: array();
+      $filters = array_filter($form_state->getValue($field_names));
+      $prev_filters = $config->get($field_names) ?: array();
       $added_filters = array_diff($filters, $prev_filters);
       $removed_filters = array_diff($prev_filters, $filters);
       $changed_filters = array_merge($added_filters, $removed_filters);
@@ -155,18 +151,31 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
       if (empty($changed_filters)) {
         continue;
       }
-      $config->set($type, $filters);
+      $config->set($field_names, $filters);
 
       // Find corresponding Views and save them.
       $changed_view_names = array();
       foreach ($changed_filters as $filter_name) {
         $changed_view_names = array_merge($changed_view_names, $form['#view_names'][$filter_name]);
       }
-      foreach (\Drupal::entityTypeManager()->getStorage('view')->loadMultiple() as $view) {
+
+      // We cycle through all the views. If the view is flagged as needing to be
+      // edited, we check if any of the changed filters is present in that view.
+      // If we find one, we set its value depending if we are adding or removing
+      // the new plugin.
+      foreach (\Drupal::entityTypeManager()->getStorage('view')->loadMultiple() as &$view) {
         $view_name = $view->get('label');
         if (in_array($view_name, $changed_view_names)) {
-          drupal_set_message(t('Updated contextual filter(s) on view %view_name.', array('%view_name' => $view_name)));
-          $view->save();
+          $display = &$view->getDisplay('default');
+          foreach ($changed_filters as $filter_name)  {
+            $field_name = substr($filter_name, strpos($filter_name, ":") + 1);
+            if (isset($display['display_options']['arguments'][$field_name]['plugin_id'])) {
+              $new_value = in_array($filter_name, $added_filters) ? $range_type : $type;
+              $display['display_options']['arguments'][$field_name]['plugin_id'] = $new_value;
+            }
+            drupal_set_message(t('Updated contextual filter(s) on view %view_name.', array('%view_name' => $view_name)));
+            $view->save();
+          }
         }
       }
     }
