@@ -2,22 +2,24 @@
 
 /**
  * @file
- * Contains Drupal\contextual_range_filter\Plugin\views\argument\StringRange
+ * Contains Drupal\contextual_range_filter\Plugin\views\argument\StringRangeArgument
  */
 
 namespace Drupal\contextual_range_filter\Plugin\views\argument;
 
-use Drupal\views\Plugin\views\argument\String;
+use Drupal\views\Plugin\views\argument\StringArgument;
 use Drupal\Component\Annotation\PluginID;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Argument handler to accept a string (e.g. alphabetical) range.
+ * Argument handler to accept a string range.
  *
  * @ingroup views_argument_handlers
  *
- * @PluginID("string_range")
+ * @ViewsArgument("string_range")
  */
-class StringRange extends String {
+
+class StringRangeArgument extends StringArgument {
 
   /**
    * {@inheritdoc}.
@@ -32,7 +34,7 @@ class StringRange extends String {
   /**
    * {@inheritdoc}.
    */
-  public function buildOptionsForm(&$form, &$form_state) {
+  public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
 
     $form['description']['#markup'] = t('Contextual string range filter values are taken from the URL.');
