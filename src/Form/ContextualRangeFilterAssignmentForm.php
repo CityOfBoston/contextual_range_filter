@@ -51,16 +51,11 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
     }
 
     foreach (Views::getAllViews() as $view) {
-      foreach ($view->getDisplay('default') as $display) {
+      foreach ($view->get('display') as $display) {
         if (!empty($display['display_options']['arguments'])) {
           foreach ($display['display_options']['arguments'] as $contextual_filter) {
-            if (empty($contextual_filter['plugin_id'])) {
-              // E.g., search back links.
-              continue;
-            }
             $plugin_id = $contextual_filter['plugin_id'];
             $class = $plugin_data['argument'][$plugin_id]['class'];
-
             // Does this contextual filter class extend one of the base
             // contextual filter classes?
             // Note: lists have a class of Numeric or String, so nothing special
@@ -86,15 +81,14 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
               if (views_view_is_disabled($view)) {
                 $view_name .= ' (' . $this->t('disabled') . ')';
               }
-
-              if ($is_date_handler) {
-                $this->addToRangeFields($range_fields['date_field_names'][$machine_name], $title, $view_name);
+              if ($is_date_handler && !in_array($view_name, $range_fields['date_field_names'][$machine_name][$title])) {
+                $range_fields['date_field_names'][$machine_name][$title][] = $view_name;
               }
-              elseif ($is_numeric_handler) {
-                $this->addToRangeFields($range_fields['numeric_field_names'][$machine_name], $title, $view_name);
+              elseif ($is_numeric_handler && !in_array($view_name, $range_fields['numeric_field_names'][$machine_name][$title])) {
+                $range_fields['numeric_field_names'][$machine_name][$title][] = $view_name;
               }
-              elseif ($is_string_handler) {
-                $this->addToRangeFields($range_fields['string_field_names'][$machine_name], $title, $view_name);
+              elseif ($is_string_handler && !in_array($view_name, $range_fields['string_field_names'][$machine_name][$title])) {
+                $range_fields['string_field_names'][$machine_name][$title][] = $view_name;
               }
             }
           }
@@ -110,13 +104,15 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
     $label = reset($labels);
     foreach ($range_fields as $type => $data) {
       $options = [];
-      foreach ($data as $full_name => $view_names) {
+      foreach ($data as $machine_name => $view_names) {
+        $title = key($view_names);
+        $views_list = implode(', ', $view_names[$title]);
         $replace = [
-          '%field' => reset($view_names),
-          '@views' => implode(', ', array_slice($view_names, 1)),
+          '%field' => $title,
+          '@views' => $views_list,
         ];
-        $options[$full_name] = $this->t('%field in view(s): @views', $replace);
-        $form['#view_names'][$full_name] = array_slice($view_names, 1);
+        $options[$machine_name] = $this->t('%field in view(s): @views', $replace);
+        $form['#view_names'][$machine_name] = $view_names;
       }
       $form['field_names'][$type] = [
         '#type' => 'checkboxes',
@@ -126,7 +122,6 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
       ];
       $label = next($labels);
     }
-
     return parent::buildForm($form, $form_state);
   }
 
@@ -180,25 +175,6 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
     }
     $config->save();
     parent::submitForm($form, $form_state);
-  }
-
-  /**
-   * Add a field to the collection of contextual range filter fields.
-   *
-   * @param array $range_field_view_names
-   *   The array to append the supplied field name and view names to.
-   * @param string $title
-   *   The "compound" title to be used.
-   * @param string $view_name
-   *   The name of the view that the field occurs in.
-   */
-  protected function addToRangeFields(array &$range_field_view_names, $title, $view_name) {
-    if (!isset($range_field_view_names)) {
-      $range_field_view_names[] = $title;
-    }
-    if (!in_array($view_name, $range_field_view_names)) {
-      $range_field_view_names[] = $view_name;
-    }
   }
 
 }
