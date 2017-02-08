@@ -19,7 +19,7 @@ use Drupal\views\Plugin\views\argument_validator\NumericArgumentValidator;
 class NumericRangeArgumentValidator extends NumericArgumentValidator {
 
   /**
-   * {@inheritdoc}.
+   * Validate our argument.
    */
   public function validateArgument($argument) {
 

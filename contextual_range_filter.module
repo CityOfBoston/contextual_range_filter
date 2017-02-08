@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * contextual_range_filter.module
@@ -18,6 +19,7 @@
 
 use Drupal\Core\Url;
 use Drupal\Core\Routing\RouteMatchInterface;
+
 // Use the same separator as for Date fields, but allow an alternative also.
 const CONTEXTUAL_RANGE_FILTER_SEPARATOR1 = '--';
 const CONTEXTUAL_RANGE_FILTER_SEPARATOR2 = ':';
@@ -26,9 +28,9 @@ const CONTEXTUAL_RANGE_FILTER_SEPARATOR2 = ':';
  * Implements hook_help().
  */
 function contextual_range_filter_help($route_name, RouteMatchInterface $route_match) {
-    
+
   switch ($route_name) {
-    //Main module help for the jmol module.
+    // Main module help for the contextual_range_filter module.
     case 'help.page.contextual_range_filter':
       $options = [
         ':one' => Url::fromRoute('contextual_range_filter.settings')->toString(),
@@ -43,7 +45,8 @@ function contextual_range_filter_help($route_name, RouteMatchInterface $route_ma
       ];
       $extra2 = t('Known issues and solutions may be found on the <a target="project-page" href=":contextual_range_filter">Views Contextual Range Filter</a> project page.', $extra2_options);
       return $help1 . '<p>' . $extra1 . '</p><p>' . $extra2 . '</p>';
-     default:
+
+    default:
   }
 }
 
@@ -75,11 +78,11 @@ function contextual_range_filter_permission() {
  * Split a filter range string into an array containing "from" and "to" values.
  *
  * @param string $range
- *   typically of the format "from--to", "from--" or "--to", but a single value
- *   is also allowed. A single colon is accepted instead of --
+ *   Typically of the format "from--to", "from--" or "--to", but a single value
+ *   is also allowed. A single colon is accepted instead of --.
  *
  * @return array
- *   array of length 2, the 2nd value equals FALSE when no separator was found
+ *   Array of length 2, the 2nd value equals FALSE when no separator was found.
  */
 function contextual_range_filter_split($range) {
   // A little defensive programming to make sure we have a string.
@@ -98,9 +101,9 @@ function contextual_range_filter_split($range) {
  * Build a range query based on the ranges passed in.
  *
  * @param object $views_argument_plugin
- *   the View's contextual filter plugin 
+ *   The View's contextual filter plugin.
  * @param string $field
- *   the full field name as used in the SQL statement, or NULL
+ *   The full field name as used in the SQL statement, or NULL.
  */
 function contextual_range_filter_build_range_query($views_argument_plugin, $field = NULL) {
 
@@ -109,7 +112,7 @@ function contextual_range_filter_build_range_query($views_argument_plugin, $fiel
   }
   $real_field = $views_argument_plugin->realField;
   if (!isset($field)) {
-    // Example: "field_datafield_price.field_price_value"
+    // Example: "field_datafield_price.field_price_value".
     $field = "$views_argument_plugin->tableAlias.$real_field";
   }
   // $is_not comes from "Exclude" tickbox.
@@ -132,7 +135,7 @@ function contextual_range_filter_build_range_query($views_argument_plugin, $fiel
       $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder $null_check", array($placeholder => $range));
     }
     elseif ($from != '' && $to != '') {
-      // from--to
+      // From--To.
       $operator = $is_not ? 'NOT BETWEEN' : 'BETWEEN';
       $placeholder_from = $placeholder;
       $placeholder_to = $views_argument_plugin->query->placeholder($real_field);
@@ -140,12 +143,12 @@ function contextual_range_filter_build_range_query($views_argument_plugin, $fiel
         array($placeholder_from => $from, $placeholder_to => $to));
     }
     elseif ($from != '') {
-      // from--
+      // From--.
       $operator = $is_not ? '<' : '>=';
       $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder $null_check", array($placeholder => $from));
     }
     elseif ($to != '') {
-      // --to
+      // --to.
       $operator = $is_not ? '>' : '<=';
       $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder $null_check", array($placeholder => $to));
     }

@@ -14,7 +14,6 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * @ViewsArgument("date_range")
  */
-
 class DateRange extends Date {
 
   /**
@@ -61,7 +60,7 @@ class DateRange extends Date {
   }
 
   /**
-   * {@inheritdoc}.
+   * Define our options.
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
@@ -71,7 +70,7 @@ class DateRange extends Date {
   }
 
   /**
-   * {@inheritdoc}.
+   * Build the options form.
    */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);

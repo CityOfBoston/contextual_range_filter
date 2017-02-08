@@ -1,15 +1,7 @@
 <?php
 
-/**
- * @file
- * NumericRangeArgument.php
- * 
- * Contains Drupal\contextual_range_filter\Plugin\views\argument\NumericRangeArgument
- */
-
 namespace Drupal\contextual_range_filter\Plugin\views\argument;
 
-use Drupal\Component\Annotation\PluginID;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\views\Plugin\views\argument\NumericArgument;
 
@@ -20,11 +12,10 @@ use Drupal\views\Plugin\views\argument\NumericArgument;
  *
  * @ViewsArgument("numeric_range")
  */
-
 class NumericRangeArgument extends NumericArgument {
 
   /**
-   * {@inheritdoc}.
+   * Build the options form.
    */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
@@ -36,7 +27,7 @@ class NumericRangeArgument extends NumericArgument {
     $form['break_phrase']['#description'] = t('If selected, multiple ranges may be specified by stringing them together with plus signs.<br/>Example: <strong>29--29.95+100--250</strong>');
 
     $form['not']['#description'] = t('Negate the range. If selected, output matching the specified numeric range(s) will be excluded, rather than included.');
-    
+
   }
 
   /**
@@ -65,7 +56,7 @@ class NumericRangeArgument extends NumericArgument {
   }
 
   /**
-   * {@inheritdoc}.
+   * Create the query.
    */
   public function query($group_by = FALSE) {
     $this->ensureMyTable();

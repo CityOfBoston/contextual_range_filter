@@ -3,9 +3,10 @@
 namespace Drupal\contextual_range_filter\Form;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\views\ViewExecutable;
+use Drupal\views\Views;
 
 /**
  * Convert selected contextual filters to contextual range filters.
@@ -27,21 +28,25 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
   protected $entityTypeManager;
 
   /**
-   * Constructs a ContextualRangeFilterAssignmentForm object
+   * Constructs a ContextualRangeFilterAssignmentForm object.
    *
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
-   *   The module handler service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager service.
    */
   public function __construct(EntityTypeManagerInterface $entity_type_manager) {
     $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
-   * {@inheritdoc}.
+   * Return the form id.
    */
   public function getFormId() {
     return 'contextual_range_filter_settings';
   }
+
+  /**
+   * Return the configuration route.
+   */
   protected function getEditableConfigNames() {
     return [
       'contextual_range_filter.settings',
@@ -59,8 +64,8 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
     );
     $class_path = 'Drupal\views\Plugin\views\argument';
     $plugin_data = [];
-    foreach (\Drupal\views\ViewExecutable::getPluginTypes() as $plugin_type) {
-      $plugin_data[$plugin_type] = \Drupal\views\Views::pluginManager($plugin_type)->getDefinitions();
+    foreach (ViewExecutable::getPluginTypes() as $plugin_type) {
+      $plugin_data[$plugin_type] = Views::pluginManager($plugin_type)->getDefinitions();
     }
 
     foreach ($this->entityTypeManager->getStorage('view')->loadMultiple() as $view) {

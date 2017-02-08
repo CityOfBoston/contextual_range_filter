@@ -4,4 +4,3 @@ contextual_range_filter.settings:
     _form: 'Drupal\contextual_range_filter\Form\ContextualRangeFilterAssignmentForm'
   requirements:
     _permission: 'administer contextual range filters'
-

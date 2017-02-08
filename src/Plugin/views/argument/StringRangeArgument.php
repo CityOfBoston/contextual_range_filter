@@ -15,7 +15,7 @@ use Drupal\Core\Form\FormStateInterface;
 class StringRangeArgument extends StringArgument {
 
   /**
-   * {@inheritdoc}.
+   * Define our options.
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
@@ -25,7 +25,7 @@ class StringRangeArgument extends StringArgument {
   }
 
   /**
-   * {@inheritdoc}.
+   * Build the form.
    */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
