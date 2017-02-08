@@ -65,6 +65,7 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
 
             // Anything that is not a date or string will be shown as numeric.
             $is_numeric_handler = !$is_date_handler && !$is_string_handler;
+
             if ($is_date_handler || $is_numeric_handler || $is_string_handler) {
 
               // For every View $display we get a number of fields.
@@ -81,14 +82,23 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
               if (views_view_is_disabled($view)) {
                 $view_name .= ' (' . $this->t('disabled') . ')';
               }
-              if ($is_date_handler && !in_array($view_name, $range_fields['date_field_names'][$machine_name][$title])) {
-                $range_fields['date_field_names'][$machine_name][$title][] = $view_name;
+              if ($is_date_handler) {
+                $title_used = isset($range_fields['date_field_names'][$machine_name][$title]);
+                if (!title_used || !in_array($view_name, $range_fields['date_field_names'][$machine_name][$title])) {
+                  $range_fields['date_field_names'][$machine_name][$title][] = $view_name;
+                }
               }
-              elseif ($is_numeric_handler && !in_array($view_name, $range_fields['numeric_field_names'][$machine_name][$title])) {
-                $range_fields['numeric_field_names'][$machine_name][$title][] = $view_name;
+              elseif ($is_numeric_handler) {
+                $title_used = isset($range_fields['numeric_field_names'][$machine_name][$title]);
+                if (!title_used || !in_array($view_name, $range_fields['numeric_field_names'][$machine_name][$title])) {
+                  $range_fields['numeric_field_names'][$machine_name][$title][] = $view_name;
+                }
               }
-              elseif ($is_string_handler && !in_array($view_name, $range_fields['string_field_names'][$machine_name][$title])) {
-                $range_fields['string_field_names'][$machine_name][$title][] = $view_name;
+              elseif ($is_string_handler) {
+                $title_used = isset($range_fields['string_field_names'][$machine_name][$title]);
+                if (!title_used || !in_array($view_name, $range_fields['string_field_names'][$machine_name][$title])) {
+                  $range_fields['string_field_names'][$machine_name][$title][] = $view_name;
+                }
               }
             }
           }
