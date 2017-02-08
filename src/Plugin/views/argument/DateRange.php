@@ -127,7 +127,7 @@ class DateRange extends Date {
    * Prepare the range query where clause.
    *
    * @param bool $group_by
-   *   whether to apply grouping.
+   *   Whether to apply grouping.
    */
   public function query($group_by = FALSE) {
     $this->ensureMyTable();
