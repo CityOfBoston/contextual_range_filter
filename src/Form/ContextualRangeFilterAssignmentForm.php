@@ -84,19 +84,19 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
               }
               if ($is_date_handler) {
                 $title_used = isset($range_fields['date_field_names'][$machine_name][$title]);
-                if (!title_used || !in_array($view_name, $range_fields['date_field_names'][$machine_name][$title])) {
+                if (!$title_used || !in_array($view_name, $range_fields['date_field_names'][$machine_name][$title])) {
                   $range_fields['date_field_names'][$machine_name][$title][] = $view_name;
                 }
               }
               elseif ($is_numeric_handler) {
                 $title_used = isset($range_fields['numeric_field_names'][$machine_name][$title]);
-                if (!title_used || !in_array($view_name, $range_fields['numeric_field_names'][$machine_name][$title])) {
+                if (!$title_used || !in_array($view_name, $range_fields['numeric_field_names'][$machine_name][$title])) {
                   $range_fields['numeric_field_names'][$machine_name][$title][] = $view_name;
                 }
               }
               elseif ($is_string_handler) {
                 $title_used = isset($range_fields['string_field_names'][$machine_name][$title]);
-                if (!title_used || !in_array($view_name, $range_fields['string_field_names'][$machine_name][$title])) {
+                if (!$title_used || !in_array($view_name, $range_fields['string_field_names'][$machine_name][$title])) {
                   $range_fields['string_field_names'][$machine_name][$title][] = $view_name;
                 }
               }
