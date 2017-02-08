@@ -43,7 +43,7 @@ class ContextualRangeFilter {
    * @param string $field
    *   The full field name as used in the SQL statement, or NULL.
    */
-  public function buildRangeQuery($views_argument_plugin, $field = NULL) {
+  public static function buildRangeQuery($views_argument_plugin, $field = NULL) {
 
     if (!isset($views_argument_plugin) || $views_argument_plugin->value === FALSE) {
       return;
