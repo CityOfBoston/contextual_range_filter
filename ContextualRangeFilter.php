@@ -2,6 +2,9 @@
 
 namespace Drupal\contextual_range_filter;
 
+/**
+ * Functions for the contextual_range_filter module.
+ */
 class ContextualRangeFilter {
 
   // Use the same separator as for Date fields, but allow an alternative also.
@@ -9,14 +12,15 @@ class ContextualRangeFilter {
   const CONTEXTUAL_RANGE_FILTER_SEPARATOR2 = ':';
 
   /**
-   * Split a filter range string into an array containing "from" and "to" values.
+   * Split a filter range string into an array of "from" and "to" values.
    *
    * @param string $range
-   *   Typically of the format "from--to", "from--" or "--to", but a single value
-   *   is also allowed. A single colon is accepted instead of --.
+   *   Typically of the format "from--to", "from--" or "--to", but a single
+   *   value is also allowed. A single colon is accepted instead of --.
    *
    * @return array
-   *   Array of length 2, the 2nd value equals FALSE when no separator was found.
+   *   Array of length 2, the 2nd value equals FALSE when no separator was
+   *   found.
    */
   private static function split($range) {
     // A little defensive programming to make sure we have a string.
@@ -30,7 +34,7 @@ class ContextualRangeFilter {
     }
     return count($from_to) == 1 ? array(reset($from_to), FALSE) : $from_to;
   }
-  
+
   /**
    * Build a range query based on the ranges passed in.
    *
@@ -40,7 +44,7 @@ class ContextualRangeFilter {
    *   The full field name as used in the SQL statement, or NULL.
    */
   public function buildRangeQuery($views_argument_plugin, $field = NULL) {
-  
+
     if (!isset($views_argument_plugin) || $views_argument_plugin->value === FALSE) {
       return;
     }
@@ -52,16 +56,16 @@ class ContextualRangeFilter {
     // $is_not comes from "Exclude" tickbox.
     $is_not = !empty($views_argument_plugin->options['not']);
     $null_check = $is_not ? "OR $field IS NULL" : '';
-  
+
     // All WHERE clauses are OR-ed or AND-ed together in the same group.
     // Note: NOT (a OR b OR c) == (NOT a) AND (NOT b) AND (NOT c).
     $group = $views_argument_plugin->query->setWhereGroup($is_not ? 'AND' : 'OR');
-  
+
     foreach ($views_argument_plugin->value as $range) {
       $placeholder = $views_argument_plugin->query->placeholder($real_field);
-  
+
       list($from, $to) = self::split($range);
-  
+
       if ($to === FALSE) {
         // Dealing with a single value, not a range.
         $operator = $is_not ? '!=' : '=';
