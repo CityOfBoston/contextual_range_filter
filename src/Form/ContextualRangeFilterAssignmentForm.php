@@ -1,12 +1,9 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\system\Form\ContextualRangeFilterAssignmentForm.
- */
-
 namespace Drupal\contextual_range_filter\Form;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -23,9 +20,26 @@ use Drupal\Core\Form\FormStateInterface;
 class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
 
   /**
+   * Entity Type Manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
+   * Constructs a ContextualRangeFilterAssignmentForm object
+   *
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler service.
+   */
+  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
+    $this->entityTypeManager = $entity_type_manager;
+  }
+
+  /**
    * {@inheritdoc}.
    */
-  public function getFormID() {
+  public function getFormId() {
     return 'contextual_range_filter_settings';
   }
   protected function getEditableConfigNames() {
@@ -49,7 +63,7 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
       $plugin_data[$plugin_type] = \Drupal\views\Views::pluginManager($plugin_type)->getDefinitions();
     }
 
-    foreach (\Drupal::entityTypeManager()->getStorage('view')->loadMultiple() as $view) {
+    foreach ($this->entityTypeManager->getStorage('view')->loadMultiple() as $view) {
       foreach ($view->get('display') as $display) {
         if (!empty($display['display_options']['arguments'])) {
           foreach ($display['display_options']['arguments'] as $contextual_filter) {
@@ -127,7 +141,7 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
     }
     $element['#cache']['tags'] = $config->getCacheTags();
     $form[] = $element;
-     
+ 
     return parent::buildForm($form, $form_state);
   }
 
@@ -163,7 +177,7 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
       // edited, we check if any of the changed filters is present in that view.
       // If we find one, we set its value depending if we are adding or removing
       // the new plugin.
-      foreach (\Drupal::entityTypeManager()->getStorage('view')->loadMultiple() as &$view) {
+      foreach ($this->entityTypeManager->getStorage('view')->loadMultiple() as $view) {
         $view_name = $view->get('label');
         if (in_array($view_name, $changed_view_names)) {
           $display = &$view->getDisplay('default');
@@ -173,7 +187,7 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
               $new_value = in_array($filter_name, $added_filters) ? $range_type : $type;
               $display['display_options']['arguments'][$field_name]['plugin_id'] = $new_value;
             }
-            drupal_set_message(t('Updated contextual filter(s) on view %view_name.', array('%view_name' => $view_name)));
+            drupal_set_message($this->t('Updated contextual filter(s) on view %view_name.', array('%view_name' => $view_name)));
             $view->save();
           }
         }

@@ -1,16 +1,10 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\contextual_range_filter\Plugin\views\argument\DateRange
- */
-
 namespace Drupal\contextual_range_filter\Plugin\views\argument;
 
 use Drupal\views\ViewExecutable;
 use Drupal\views\Plugin\views\argument\Date;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
-use Drupal\Component\Annotation\PluginID;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -167,4 +161,5 @@ class DateRange extends Date {
       $this->value = FALSE;
     }
   }
+
 }

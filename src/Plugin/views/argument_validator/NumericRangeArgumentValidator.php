@@ -1,16 +1,7 @@
 <?php
 
-/**
- * @file
- * NumericRangeArgumentValidator.php
- *
- * Drupal\contextual_range_filter\Plugin\views\argument_validator\NumericRangeArgumentValidator
- */
-
 namespace Drupal\contextual_range_filter\Plugin\views\argument_validator;
 
-use Drupal\Component\Annotation\Plugin;
-use Drupal\Core\Annotation\Translation;
 use Drupal\views\Plugin\views\argument_validator\NumericArgumentValidator;
 
 /**
@@ -31,6 +22,7 @@ class NumericRangeArgumentValidator extends NumericArgumentValidator {
    * {@inheritdoc}.
    */
   public function validateArgument($argument) {
+
     // Plus sign may arrive as a space, so cover both.
     $ranges = preg_split('/[+ ]/', $argument);
 
@@ -54,4 +46,5 @@ class NumericRangeArgumentValidator extends NumericArgumentValidator {
     }
     return TRUE;
   }
+
 }

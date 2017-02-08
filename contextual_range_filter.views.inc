@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * contextual_range_filter.views.inc

@@ -1,14 +1,8 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\contextual_range_filter\Plugin\views\argument\StringRangeArgument
- */
-
 namespace Drupal\contextual_range_filter\Plugin\views\argument;
 
 use Drupal\views\Plugin\views\argument\StringArgument;
-use Drupal\Component\Annotation\PluginID;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -18,7 +12,6 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * @ViewsArgument("string_range")
  */
-
 class StringRangeArgument extends StringArgument {
 
   /**
@@ -87,4 +80,5 @@ class StringRangeArgument extends StringArgument {
     }
     contextual_range_filter_build_range_query($this, $field);
   }
+
 }
