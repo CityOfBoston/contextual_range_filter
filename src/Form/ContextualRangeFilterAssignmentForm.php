@@ -65,7 +65,7 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
             // Note: lists have a class of Numeric or String, so nothing special
             // needs or can be done for lists...
             $is_date_handler = is_a($class, "$class_path\Date", TRUE);
-          //  $is_numeric_handler = is_a($class, "$class_path\NumericArgument", TRUE);
+            //$is_numeric_handler = is_a($class, "$class_path\NumericArgument", TRUE);
             $is_string_handler = is_a($class, "$class_path\StringArgument", TRUE);
             $is_numeric_handler = !$is_date_handler && !$is_string_handler;
             if ($is_date_handler || $is_numeric_handler || $is_string_handler) {

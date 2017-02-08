@@ -11,12 +11,16 @@ use Drupal\views\ViewExecutable;
 use Drupal\views\Plugin\views\argument\Date;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
 use Drupal\Component\Annotation\PluginID;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Argument handler to accept a date range.
  *
- * @PluginID("date_range")
+ * @ingroup views_argument_handlers
+ *
+ * @ViewsArgument("date_range")
  */
+
 class DateRange extends Date {
 
   /**
@@ -75,7 +79,7 @@ class DateRange extends Date {
   /**
    * {@inheritdoc}.
    */
-  public function buildOptionsForm(&$form, &$form_state) {
+  public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
 
     $form['description']['#markup'] = t('Contextual date range filter values are taken from the URL.');
