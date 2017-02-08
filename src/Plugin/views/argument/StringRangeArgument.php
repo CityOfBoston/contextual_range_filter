@@ -4,6 +4,7 @@ namespace Drupal\contextual_range_filter\Plugin\views\argument;
 
 use Drupal\views\Plugin\views\argument\StringArgument;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\contextual_range_filter\ContextualRangeFilter;
 
 /**
  * Argument handler to accept a string range.
@@ -78,7 +79,7 @@ class StringRangeArgument extends StringArgument {
     else {
       $field = $this->getFormula();
     }
-    contextual_range_filter_build_range_query($this, $field);
+    ContextualRangeFilter::buildRangeQuery($this, $field);
   }
 
 }

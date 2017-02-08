@@ -4,6 +4,7 @@ namespace Drupal\contextual_range_filter\Plugin\views\argument;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\views\Plugin\views\argument\NumericArgument;
+use Drupal\contextual_range_filter\ContextualRangeFilter;
 
 /**
  * Argument handler to accept a numeric range.
@@ -68,7 +69,7 @@ class NumericRangeArgument extends NumericArgument {
     else {
       $this->value = array($this->argument);
     }
-    contextual_range_filter_build_range_query($this);
+    ContextualRangeFilter::buildRangeQuery($this);
   }
 
   /**

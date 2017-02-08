@@ -2,7 +2,6 @@
 
 namespace Drupal\contextual_range_filter\Form;
 
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\views\ViewExecutable;
@@ -19,23 +18,6 @@ use Drupal\views\Views;
  * range filters.
  */
 class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
-
-  /**
-   * Entity Type Manager service.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   */
-  protected $entityTypeManager;
-
-  /**
-   * Constructs a ContextualRangeFilterAssignmentForm object.
-   *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   The entity type manager service.
-   */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
-    $this->entityTypeManager = $entity_type_manager;
-  }
 
   /**
    * Return the form id.
@@ -68,8 +50,8 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
       $plugin_data[$plugin_type] = Views::pluginManager($plugin_type)->getDefinitions();
     }
 
-    foreach ($this->entityTypeManager->getStorage('view')->loadMultiple() as $view) {
-      foreach ($view->get('display') as $display) {
+    foreach (Views::getAllViews() as $view) {
+      foreach ($view->getDisplay('default') as $display) {
         if (!empty($display['display_options']['arguments'])) {
           foreach ($display['display_options']['arguments'] as $contextual_filter) {
             if (empty($contextual_filter['plugin_id'])) {
@@ -151,7 +133,7 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
   /**
    * Submit the form.
    */
-  public function submitForm(&$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     // Clear out stuff we're not interested with.
     $types = ['numeric', 'string', 'date'];
     $config = $this->configFactory->getEditable('contextual_range_filter.settings');
@@ -180,7 +162,7 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
       // edited, we check if any of the changed filters is present in that view.
       // If we find one, we set its value depending if we are adding or removing
       // the new plugin.
-      foreach ($this->entityTypeManager->getStorage('view')->loadMultiple() as $view) {
+      foreach (Views::getAllViews() as $view) {
         $view_name = $view->get('label');
         if (in_array($view_name, $changed_view_names)) {
           $display = &$view->getDisplay('default');

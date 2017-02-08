@@ -6,6 +6,7 @@ use Drupal\views\ViewExecutable;
 use Drupal\views\Plugin\views\argument\Date;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\contextual_range_filter\ContextualRangeFilter;
 
 /**
  * Argument handler to accept a date range.
@@ -139,7 +140,7 @@ class DateRange extends Date {
     else {
       $this->value = array($this->argument);
     }
-    contextual_range_filter_build_range_query($this, $this->getFormula());
+    ContextualRangeFilter::buildRangeQuery($this, $this->getFormula());
   }
 
   /**
