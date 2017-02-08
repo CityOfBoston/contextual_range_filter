@@ -139,20 +139,17 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
       $form['field_names'][$type] = [
         '#type' => 'checkboxes',
         '#title' => $this->t('Select which of the below contextual <em>@label</em> filters should be converted to <em>@label range</em> filters:', ['@label' => $label]),
-          
         '#default_value' => $config->get($type) ?: [],
         '#options' => $options,
       ];
       $label = next($labels);
     }
-    $element['#cache']['tags'] = $config->getCacheTags();
-    $form[] = $element;
- 
+
     return parent::buildForm($form, $form_state);
   }
 
   /**
-   * {@inheritdoc}.
+   * Submit the form.
    */
   public function submitForm(&$form, FormStateInterface $form_state) {
     // Clear out stuff we're not interested with.
@@ -187,7 +184,7 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
         $view_name = $view->get('label');
         if (in_array($view_name, $changed_view_names)) {
           $display = &$view->getDisplay('default');
-          foreach ($changed_filters as $filter_name)  {
+          foreach ($changed_filters as $filter_name) {
             $field_name = substr($filter_name, strpos($filter_name, ":") + 1);
             if (isset($display['display_options']['arguments'][$field_name]['plugin_id'])) {
               $new_value = in_array($filter_name, $added_filters) ? $range_type : $type;
@@ -207,13 +204,13 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
    * Add a field to the collection of contextual range filter fields.
    *
    * @param array $range_field_view_names
-   *   the array to append the supplied field name and view names to
+   *   The array to append the supplied field name and view names to.
    * @param string $title
-   *   the "compound" title to be used
+   *   The "compound" title to be used.
    * @param string $view_name
-   *   the name of the view that the field occurs in
+   *   The name of the view that the field occurs in.
    */
-  protected function addToRangeFields(&$range_field_view_names, $title, $view_name) {
+  protected function addToRangeFields(array &$range_field_view_names, $title, $view_name) {
     if (!isset($range_field_view_names)) {
       $range_field_view_names[] = $title;
     }
