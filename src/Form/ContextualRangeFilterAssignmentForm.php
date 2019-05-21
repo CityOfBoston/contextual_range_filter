@@ -177,7 +177,7 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
               $new_value = in_array($filter_name, $added_filters) ? $range_type : $type;
               $display['display_options']['arguments'][$field_name]['plugin_id'] = $new_value;
             }
-            drupal_set_message($this->t('Updated contextual filter(s) on view %view_name.', ['%view_name' => $view_name]));
+            $this->messenger()->addStatus($this->t('Updated contextual filter(s) on view %view_name.', ['%view_name' => $view_name]));
             $view->save();
           }
         }
