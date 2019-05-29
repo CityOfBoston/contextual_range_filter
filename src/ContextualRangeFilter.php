@@ -32,7 +32,7 @@ class ContextualRangeFilter {
     if (count($from_to) < 2) {
       $from_to = explode(self::CONTEXTUAL_RANGE_FILTER_SEPARATOR2, $range);
     }
-    return count($from_to) == 1 ? array(reset($from_to), FALSE) : $from_to;
+    return count($from_to) == 1 ? [reset($from_to), FALSE] : $from_to;
   }
 
   /**
@@ -69,7 +69,7 @@ class ContextualRangeFilter {
       if ($to === FALSE) {
         // Dealing with a single value, not a range.
         $operator = $is_not ? '!=' : '=';
-        $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder $null_check", array($placeholder => $range));
+        $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder $null_check", [$placeholder => $range]);
       }
       elseif ($from != '' && $to != '') {
         // From--To.
@@ -77,17 +77,17 @@ class ContextualRangeFilter {
         $placeholder_from = $placeholder;
         $placeholder_to = $views_argument_plugin->query->placeholder($real_field);
         $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder_from AND $placeholder_to $null_check",
-          array($placeholder_from => $from, $placeholder_to => $to));
+          [$placeholder_from => $from, $placeholder_to => $to)];
       }
       elseif ($from != '') {
         // From--.
         $operator = $is_not ? '<' : '>=';
-        $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder $null_check", array($placeholder => $from));
+        $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder $null_check", [$placeholder => $from]);
       }
       elseif ($to != '') {
         // --to.
         $operator = $is_not ? '>' : '<=';
-        $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder $null_check", array($placeholder => $to));
+        $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder $null_check", [$placeholder => $to]);
       }
     }
   }
