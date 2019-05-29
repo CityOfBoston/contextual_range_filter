@@ -21,7 +21,7 @@ class StringRangeArgument extends StringArgument {
   protected function defineOptions() {
     $options = parent::defineOptions();
     // Add 'Exclude' tick box, as it is not supplied by the String base class.
-    $options['not'] = array('default' => FALSE, 'bool' => TRUE);
+    $options['not'] = ['default' => FALSE, 'bool' => TRUE];
     return $options;
   }
 
@@ -38,13 +38,13 @@ class StringRangeArgument extends StringArgument {
     $form['break_phrase']['#title'] = t('Allow multiple string (i.e. alphabetic) ranges');
     $form['break_phrase']['#description'] = t('If selected, multiple ranges may be specified by stringing them together with plus signs.<br/>Example: <strong>a--f+q--y</strong>');
 
-    $form['not'] = array(
+    $form['not'] = [
       '#type' => 'checkbox',
       '#title' => t('Exclude'),
       '#description' => t('Negate the range. If selected, output matching the specified range(s) will be excluded, rather than included.'),
       '#default_value' => !empty($this->options['not']),
       '#fieldset' => 'more',
-    );
+    ];
   }
 
   /**
@@ -60,7 +60,7 @@ class StringRangeArgument extends StringArgument {
       $this->breakPhraseString($argument, $this);
     }
     else {
-      $this->value = array($argument);
+      $this->value = [$argument];
     }
     $this->ensureMyTable();
 
