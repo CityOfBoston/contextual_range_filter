@@ -65,8 +65,8 @@ class DateRange extends Date {
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-    $options['break_phrase'] = array('default' => FALSE);
-    $options['not'] = array('default' => FALSE);
+    $options['break_phrase'] = ['default' => FALSE];
+    $options['not'] = ['default' => FALSE];
     return $options;
   }
 
@@ -81,21 +81,21 @@ class DateRange extends Date {
     $form['more']['#collapsed'] = FALSE;
 
     // Allow passing multiple values.
-    $form['break_phrase'] = array(
+    $form['break_phrase'] = [
       '#type' => 'checkbox',
       '#title' => t('Allow multiple date ranges'),
       '#description' => t('If selected, multiple date ranges may be specified by stringing them together with plus signs.<br/>Example: <strong>19990101--20051231+20130701--20140630</strong>'),
       '#default_value' => $this->options['break_phrase'],
       '#fieldset' => 'more',
-    );
+    ];
 
-    $form['not'] = array(
+    $form['not'] = [
       '#type' => 'checkbox',
       '#title' => t('Exclude'),
       '#description' => t('Negate the range. If selected, output matching the specified date range(s) will be excluded, rather than included.'),
       '#default_value' => !empty($this->options['not']),
       '#fieldset' => 'more',
-    );
+    ];
   }
 
   /**
@@ -111,7 +111,7 @@ class DateRange extends Date {
       $this->breakPhraseRange($this->argument);
     }
     else {
-      $this->value = array($this->argument);
+      $this->value = [$this->argument];
       $this->operator = 'or';
     }
     if ($this->value === FALSE) {
