@@ -50,11 +50,11 @@ function contextual_range_filter_help($route_name, RouteMatchInterface $route_ma
  * Implements hook_menu().
  */
 function contextual_range_filter_menu() {
-  $items['admin/config/content/contextual-range-filter'] = array(
+  $items['admin/config/content/contextual-range-filter'] = [
     'title' => 'Views Contextual Range Filters',
     'description' => 'Select the contextual filters that are to be converted to contextual <em>range</em> filters.',
     'route_name' => 'contextual_range_filter_settings',
-  );
+  ];
   return $items;
 }
 
@@ -62,10 +62,10 @@ function contextual_range_filter_menu() {
  * Implements hook_permission().
  */
 function contextual_range_filter_permission() {
-  return array(
-    'administer contextual range filters' => array(
+  return [
+    'administer contextual range filters' => [
       'title' => t('Administer contextual range filters'),
       'description' => t('Convert contextual filters into contextual <em>range</em> filters.'),
-    ),
-  );
+    ],
+  ];
 }
