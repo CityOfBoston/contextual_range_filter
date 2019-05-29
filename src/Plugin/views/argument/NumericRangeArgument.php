@@ -44,7 +44,7 @@ class NumericRangeArgument extends NumericArgument {
       $this->breakPhraseRange($this->argument);
     }
     else {
-      $this->value = array($this->argument);
+      $this->value = [$this->argument];
       $this->operator = 'or';
     }
     if ($this->value === FALSE) {
@@ -67,7 +67,7 @@ class NumericRangeArgument extends NumericArgument {
       $this->breakPhraseRange($this->argument);
     }
     else {
-      $this->value = array($this->argument);
+      $this->value = [$this->argument];
     }
     ContextualRangeFilter::buildRangeQuery($this);
   }
