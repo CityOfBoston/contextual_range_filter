@@ -1,0 +1,6 @@
+contextual_range_filter.admin:
+  title: 'Contextual Range Filter'
+  description: 'contextual range filter module settings form'
+  parent: system.admin_config_ui
+  route_name: contextual_range_filter.settings
+  weight: -110
