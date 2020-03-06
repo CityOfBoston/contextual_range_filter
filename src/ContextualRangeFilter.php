@@ -76,8 +76,9 @@ class ContextualRangeFilter {
         $operator = $is_not ? 'NOT BETWEEN' : 'BETWEEN';
         $placeholder_from = $placeholder;
         $placeholder_to = $views_argument_plugin->query->placeholder($real_field);
-        $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder_from AND $placeholder_to $null_check",
-          [$placeholder_from => $from, $placeholder_to => $to)];
+        $args = [$placeholder_from => $from, $placeholder_to => $to];
+        $expression = "$field $operator $placeholder_from AND $placeholder_to $null_check";
+        $views_argument_plugin->query->addWhereExpression($group, $expression, $args);
       }
       elseif ($from != '') {
         // From--.
