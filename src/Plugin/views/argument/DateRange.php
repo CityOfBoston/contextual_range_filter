@@ -138,7 +138,7 @@ class DateRange extends Date {
       $this->breakPhraseRange($this->argument);
     }
     else {
-      $this->value = array($this->argument);
+      $this->value = [$this->argument];
     }
     ContextualRangeFilter::buildRangeQuery($this, $this->getFormula());
   }

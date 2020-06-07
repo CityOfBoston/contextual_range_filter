@@ -50,7 +50,7 @@ class ContextualRangeFilter {
     }
     $real_field = $views_argument_plugin->realField;
     if (!isset($field)) {
-      // Example: "field_datafield_price.field_price_value".
+      // Example: "node__field_price.field_price_value".
       $field = "$views_argument_plugin->tableAlias.$real_field";
     }
     // $is_not comes from "Exclude" tickbox.

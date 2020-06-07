@@ -11,7 +11,7 @@
  *
  *   http://yoursite.com/yourview/100--199.99
  *
- * Date, number andstring types are supported. Lists are really numbers.
+ * Date, number and string types are supported. Lists are really numbers.
  * The OR ('+') operator is supported.
  * The negate operator ("Exclude" tick box) is supported.
  * "Glossary mode" (match on first N characters of a string) is supported.
@@ -44,28 +44,4 @@ function contextual_range_filter_help($route_name, RouteMatchInterface $route_ma
 
     default:
   }
-}
-
-/**
- * Implements hook_menu().
- */
-function contextual_range_filter_menu() {
-  $items['admin/config/content/contextual-range-filter'] = [
-    'title' => 'Views Contextual Range Filters',
-    'description' => 'Select the contextual filters that are to be converted to contextual <em>range</em> filters.',
-    'route_name' => 'contextual_range_filter_settings',
-  ];
-  return $items;
-}
-
-/**
- * Implements hook_permission().
- */
-function contextual_range_filter_permission() {
-  return [
-    'administer contextual range filters' => [
-      'title' => t('Administer contextual range filters'),
-      'description' => t('Convert contextual filters into contextual <em>range</em> filters.'),
-    ],
-  ];
 }
