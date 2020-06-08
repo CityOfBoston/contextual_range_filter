@@ -23,38 +23,45 @@ class DateRange extends Date {
   public function init(ViewExecutable $view, DisplayPluginBase $display, array &$options = NULL) {
     parent::init($view, $display, $options);
 
-    $plugin_id = $options['plugin_id'] ?: 'date_fulldate';
+    switch ($options['id']) {
 
-    switch ($plugin_id) {
-
-      case 'date_year':
+      case 'changed_year':
+      case 'created_year':
         $this->format = 'Y';
         $this->argFormat = 'Y';
         break;
 
-      case 'date_year_month':
+      case 'changed_year_month':
+      case 'created_year_month':
         $this->format = 'F Y';
         $this->argFormat = 'Ym';
         break;
 
-      case 'date_month':
+      case 'changed_month':
+      case 'created_month':
         $this->format = 'F';
         $this->argFormat = 'm';
         break;
 
-      case 'date_week':
+      case 'changed_week':
+      case 'created_week':
         $this->format = 'w';
         $this->argFormat = 'W';
         break;
 
-      case 'date_day':
+      case 'changed_day':
+      case 'created_day':
         $this->format = 'j';
         $this->argFormat = 'd';
         break;
 
-      case 'date_fulldate':
+      // 'changed':
+      // 'changed_fulldate':
+      // 'created':
+      // 'created_fulldate':
       default:
         $this->format = 'F j, Y';
+        // Should we allow an optional appended time-of-day, eg 'Ymd H:i:s'?
         $this->argFormat = 'Ymd';
         break;
     }
@@ -65,6 +72,7 @@ class DateRange extends Date {
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
+    $options['relative_dates'] = ['default' => TRUE];
     $options['break_phrase'] = ['default' => FALSE];
     $options['not'] = ['default' => FALSE];
     return $options;
@@ -78,15 +86,22 @@ class DateRange extends Date {
 
     $form['description']['#markup'] = t('Contextual date range filter values are taken from the URL.');
 
-    $form['more']['#collapsed'] = FALSE;
+    $form['more']['#open'] = TRUE;
 
+    $form['relative_dates'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Allow relative date ranges'),
+      '#description' => t('If ticked, offsets from the current date may be specified.<br/>Example: <strong>2 weeks ago--yesterday"</strong>'),
+      '#default_value' => $this->options['relative_dates'],
+      '#group' => 'options][more',
+    ];
     // Allow passing multiple values.
     $form['break_phrase'] = [
       '#type' => 'checkbox',
       '#title' => t('Allow multiple date ranges'),
       '#description' => t('If selected, multiple date ranges may be specified by stringing them together with plus signs.<br/>Example: <strong>19990101--20051231+20130701--20140630</strong>'),
       '#default_value' => $this->options['break_phrase'],
-      '#fieldset' => 'more',
+      '#group' => 'options][more',
     ];
 
     $form['not'] = [
@@ -94,7 +109,7 @@ class DateRange extends Date {
       '#title' => t('Exclude'),
       '#description' => t('Negate the range. If selected, output matching the specified date range(s) will be excluded, rather than included.'),
       '#default_value' => !empty($this->options['not']),
-      '#fieldset' => 'more',
+      '#group' => 'options][more',
     ];
   }
 
@@ -131,6 +146,7 @@ class DateRange extends Date {
    *   Whether to apply grouping.
    */
   public function query($group_by = FALSE) {
+
     $this->ensureMyTable();
 
     if (!empty($this->options['break_phrase'])) {
@@ -140,7 +156,35 @@ class DateRange extends Date {
     else {
       $this->value = [$this->argument];
     }
-    ContextualRangeFilter::buildRangeQuery($this, $this->getFormula());
+    $formula = $this->getFormula();
+    $range_conversion = empty($this->options['relative_dates']) ? NULL : [$this, 'convertRelativeDateRange'];
+    ContextualRangeFilter::buildRangeQuery($this, $formula, $range_conversion);
+  }
+
+  /**
+   * Converts relative date range, "six months ago--now" to absolute date range.
+   *
+   * The format used for the absolute date range is the one set on this plugin.
+   *
+   * @param string $from
+   *   The tart date of the range.
+   * @param string $to
+   *   The end date of the range.
+   *
+   * @return array
+   *   Array of 2 strings.
+   */
+  public function convertRelativeDateRange($from, $to) {
+    $format = $this->argFormat;
+    if (!empty($from)) {
+      $abs_from = strtotime($from);
+      $from = empty($abs_from) ? date($format) : date($format, $abs_from);
+    }
+    if (!empty($to)) {
+      $abs_to = strtotime($to);
+      $to = empty($abs_to) ? date($format) : date($format, $abs_to);
+    }
+    return [$from, $to];
   }
 
   /**

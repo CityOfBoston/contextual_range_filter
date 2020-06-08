@@ -20,15 +20,15 @@ class NumericRangeArgument extends NumericArgument {
    */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
+
     $form['description']['#markup'] = t('Contextual range filter values are taken from the URL.');
 
-    $form['more']['#collapsed'] = FALSE;
+    $form['more']['#open'] = TRUE;
 
     $form['break_phrase']['#title'] = t('Allow multiple numeric ranges');
     $form['break_phrase']['#description'] = t('If selected, multiple ranges may be specified by stringing them together with plus signs.<br/>Example: <strong>29--29.95+100--250</strong>');
 
     $form['not']['#description'] = t('Negate the range. If selected, output matching the specified numeric range(s) will be excluded, rather than included.');
-
   }
 
   /**

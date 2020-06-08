@@ -33,7 +33,7 @@ class StringRangeArgument extends StringArgument {
 
     $form['description']['#markup'] = t('Contextual string range filter values are taken from the URL.');
 
-    $form['more']['#collapsed'] = FALSE;
+    $form['more']['#open'] = TRUE;
 
     $form['break_phrase']['#title'] = t('Allow multiple string (i.e. alphabetic) ranges');
     $form['break_phrase']['#description'] = t('If selected, multiple ranges may be specified by stringing them together with plus signs.<br/>Example: <strong>a--f+q--y</strong>');

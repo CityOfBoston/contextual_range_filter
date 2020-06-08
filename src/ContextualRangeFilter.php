@@ -42,8 +42,12 @@ class ContextualRangeFilter {
    *   The View's contextual filter plugin.
    * @param string $field
    *   The full field name as used in the SQL statement, or NULL.
+   * @param object $range_converter
+   *   Optional function to convert the from--to range, e.g., for relative date
+   *   ranges like "-3 months--last week" to be converted to
+   *   "20200120--20200413".
    */
-  public static function buildRangeQuery($views_argument_plugin, $field = NULL) {
+  public static function buildRangeQuery($views_argument_plugin, $field = NULL, $range_converter = NULL) {
 
     if (!isset($views_argument_plugin) || $views_argument_plugin->value === FALSE) {
       return;
@@ -66,13 +70,17 @@ class ContextualRangeFilter {
 
       list($from, $to) = self::split($range);
 
+      if (is_callable($range_converter)) {
+        list($from, $to) = call_user_func($range_converter, $from, $to);
+      }
+
       if ($to === FALSE) {
         // Dealing with a single value, not a range.
         $operator = $is_not ? '!=' : '=';
         $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder $null_check", [$placeholder => $range]);
       }
       elseif ($from != '' && $to != '') {
-        // From--To.
+        // from--to.
         $operator = $is_not ? 'NOT BETWEEN' : 'BETWEEN';
         $placeholder_from = $placeholder;
         $placeholder_to = $views_argument_plugin->query->placeholder($real_field);
@@ -81,12 +89,12 @@ class ContextualRangeFilter {
         $views_argument_plugin->query->addWhereExpression($group, $expression, $args);
       }
       elseif ($from != '') {
-        // From--.
+        // from--.
         $operator = $is_not ? '<' : '>=';
         $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder $null_check", [$placeholder => $from]);
       }
       elseif ($to != '') {
-        // --to.
+        // --to
         $operator = $is_not ? '>' : '<=';
         $views_argument_plugin->query->addWhereExpression($group, "$field $operator $placeholder $null_check", [$placeholder => $to]);
       }
