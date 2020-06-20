@@ -83,7 +83,7 @@ class StringRangeArgument extends StringArgument {
   }
 
   /**
-   * Break xfrom--xto+yfrom--yto+zfrom--zto into an array or ranges.
+   * Break xfrom--xto+yfrom--yto+zfrom--zto into an array of ranges.
    *
    * @param string $str
    *   The string to parse.

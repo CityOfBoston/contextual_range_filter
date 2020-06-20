@@ -75,9 +75,14 @@ Instead select "-Basic Validation-".
 
 Default Contextual Filter via PHP Code
 --------------------------------------
+Using a PHP Code snippet to produce a default contextual filter value comes in
+very handy when you want to create a side bar of "related content" that is 
+based on a range, rather than a single value, such as a taxonomy term.
+Examples:
 o Nearby locations
-o Similarly priced
-o Published around the same time
+o Similarly priced products
+o Blog posts published around the same time
+For full examples, see https://medium.com/@rikdeboer/new-ways-to-display-related-content-with-views-in-drupal-8-9-2444a7a889e3
 
 
 ASCII AND UTF CHARACTER ORDERING

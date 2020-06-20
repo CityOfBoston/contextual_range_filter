@@ -139,14 +139,17 @@ class DateRange extends Date {
     return implode($this->operator == 'or' ? ' + ' : ', ', $this->value);
   }
 
+  /**
+   * Overrides Drupal\views\Plugin\views\HandlerBase\getDateField().
+   */
   public function getDateField() {
     // This is a littly iffy... Basically we assume that, unless the field is
     // a known timestamp by the name of 'changed' or 'created', the field is a
     // Drupal DateTime, which presents itself to MySQL as a string of the
     // format '2020-12-31T23:59:59'.
-    // Perhaps a better approach is to have a checkbox on Contextual Filter
-    // form for the user to indicate whether the date is a timestamp or
-    // DateTime.
+    // Perhaps a better approach is to have a checkbox on the Contextual Filter
+    // form for the user to indicate whether the date is a timestamp or a
+    // DateTime (i.e. string).
     $is_string_date = ($this->field !== 'changed' && $this->field != 'created');
     return $this->query->getDateField("$this->tableAlias.$this->realField", $is_string_date);
   }
@@ -201,7 +204,7 @@ class DateRange extends Date {
   }
 
   /**
-   * Break xfrom--xto+yfrom--yto+zfrom--zto into an array or ranges.
+   * Break xfrom--xto+yfrom--yto+zfrom--zto into an array of ranges.
    *
    * @param string $str
    *   The string to parse.
