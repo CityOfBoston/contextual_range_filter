@@ -139,6 +139,18 @@ class DateRange extends Date {
     return implode($this->operator == 'or' ? ' + ' : ', ', $this->value);
   }
 
+  public function getDateField() {
+    // This is a littly iffy... Basically we assume that, unless the field is
+    // a known timestamp by the name of 'changed' or 'created', the field is a
+    // Drupal DateTime, which presents itself to MySQL as a string of the
+    // format '2020-12-31T23:59:59'.
+    // Perhaps a better approach is to have a checkbox on Contextual Filter
+    // form for the user to indicate whether the date is a timestamp or
+    // DateTime.
+    $is_string_date = ($this->field !== 'changed' && $this->field != 'created');
+    return $this->query->getDateField("$this->tableAlias.$this->realField", $is_string_date);
+  }
+
   /**
    * Prepare the range query where clause.
    *
@@ -164,10 +176,11 @@ class DateRange extends Date {
   /**
    * Converts relative date range, "six months ago--now" to absolute date range.
    *
-   * The format used for the absolute date range is the one set on this plugin.
+   * The format used for the absolute date range is the one set on this plugin,
+   * in function init().
    *
    * @param string $from
-   *   The tart date of the range.
+   *   The start date of the range.
    * @param string $to
    *   The end date of the range.
    *

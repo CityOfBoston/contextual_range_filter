@@ -162,10 +162,12 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
       // $form['#view_names'][node__field_price:field_price_value] is an array.
       $changed_view_names = [];
       foreach ($changed_filters as $filter_name) {
-        foreach ($form['#view_names'][$filter_name] as $view_names) {
-          foreach ($view_names as $view_name) {
-            if (!in_array($view_name, $changed_view_names)) {
-              $changed_view_names[] = $view_name;
+        if (!empty($form['#view_names'][$filter_name])) {
+          foreach ($form['#view_names'][$filter_name] as $view_names) {
+            foreach ($view_names as $view_name) {
+              if (!in_array($view_name, $changed_view_names)) {
+                $changed_view_names[] = $view_name;
+              }
             }
           }
         }

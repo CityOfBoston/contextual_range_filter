@@ -73,6 +73,12 @@ drop-down. Just like core's "Numeric" validator, the "Numeric Range" validator
 must not be selected if the "Allow multiple numeric ranges" box is ticked.
 Instead select "-Basic Validation-".
 
+Default Contextual Filter via PHP Code
+--------------------------------------
+o Nearby locations
+o Similarly priced
+o Published around the same time
+
 
 ASCII AND UTF CHARACTER ORDERING
 o http://en.wikipedia.org/wiki/UTF-8
