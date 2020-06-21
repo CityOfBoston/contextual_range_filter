@@ -17,6 +17,8 @@ use Drupal\contextual_range_filter\ContextualRangeFilter;
  */
 class DateRange extends Date {
 
+  use MultiRangesTrait;
+
   /**
    * Overrides Drupal\views\Plugin\views\argument\Formula::init().
    */
@@ -59,6 +61,7 @@ class DateRange extends Date {
       // 'changed_fulldate':
       // 'created':
       // 'created_fulldate':
+      // ... and everything else.
       default:
         $this->format = 'F j, Y';
         // Should we allow an optional appended time-of-day, eg 'Ymd H:i:s'?
@@ -72,7 +75,10 @@ class DateRange extends Date {
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-    $options['relative_dates'] = ['default' => TRUE];
+    // Relative dates do not apply to the 'created_month' etc options. As we
+    // don't know at ths stage which option we're dealing with, let's switch
+    // relative_dates OFF by default.
+    $options['relative_dates'] = ['default' => FALSE];
     $options['break_phrase'] = ['default' => FALSE];
     $options['not'] = ['default' => FALSE];
     return $options;
@@ -150,7 +156,8 @@ class DateRange extends Date {
     // Perhaps a better approach is to have a checkbox on the Contextual Filter
     // form for the user to indicate whether the date is a timestamp or a
     // DateTime (i.e. string).
-    $is_string_date = ($this->field !== 'changed' && $this->field != 'created');
+    $first7chars = substr($this->field, 0, 7);
+    $is_string_date = ($first7chars != 'changed') && ($first7chars != 'created');
     return $this->query->getDateField("$this->tableAlias.$this->realField", $is_string_date);
   }
 
@@ -177,7 +184,7 @@ class DateRange extends Date {
   }
 
   /**
-   * Converts relative date range, "six months ago--now" to absolute date range.
+   * Converts relative date range, "6 months ago--now", to absolute date range.
    *
    * The format used for the absolute date range is the one set on this plugin,
    * in function init().
@@ -201,25 +208,6 @@ class DateRange extends Date {
       $to = empty($abs_to) ? date($format) : date($format, $abs_to);
     }
     return [$from, $to];
-  }
-
-  /**
-   * Break xfrom--xto+yfrom--yto+zfrom--zto into an array of ranges.
-   *
-   * @param string $str
-   *   The string to parse.
-   */
-  protected function breakPhraseRange($str) {
-    if (empty($str)) {
-      return;
-    }
-    $this->value = preg_split('/[+ ]/', $str);
-    $this->operator = 'or';
-    // Keep an 'error' value if invalid ranges were given.
-    // A single non-empty value is ok, but a plus sign without values is not.
-    if (count($this->value) > 1 && (empty($this->value[0]) || empty($this->value[1]))) {
-      $this->value = FALSE;
-    }
   }
 
 }
