@@ -12,7 +12,8 @@ Integer, float, string and date ranges are supported.
 
 Node and taxonomy term ids etc are special cases of integers so will work also.
 
-You may use the OR ('+') and the negate operators. You negate by ticking the
+You may use the OR ('+' to use multiple ranges). You can also the negate the
+range(s), that is "exclude" rather than "include". You negate by ticking the 
 "Exclude" box on the Views Contextual filter configuration panel, in the "More"
 section.
 
@@ -33,9 +34,17 @@ output like so:
 
   http://yoursite.com/yourview/100--199.99  (numeric range)
   http://yoursite.com/yourotherview/k--qzz  (alphabetical range)
+  http://yoursite.com/yourthirdview/2020-01-01--2020-06-30 (date range)
   http://yoursite.com/somebodysview/3--6    (list range, using list keys)
 
 All ranges are inclusive of "from" and "to" values.
+
+Wen using a date range you have the option to use "relative dates" as an
+alternative to the strict YYYY-MM-DD format. For this tick the checkbox at the
+bottom of the Contextual Filter pane in the Views UI. 
+Not only does "relative dates" support phrases like "tomorrow" or "10 days ago",
+it also supports more colloquial absolute date specifications, such as "20 Nov"
+(this year).
 
 You may omit the start or end values to specify open-ended filter ranges:
 
@@ -50,21 +59,23 @@ everything from "!Hello" and "@the Races" up to and including anything starting
 with the letter r is returned, use " --r~".
 
 Multiple contextual filters (e.g. Title followed by Price) are fine and if you
-ticked "Allow multiple ranges" also, you can use the plus sign to OR filter
-ranges like this:
+ticked "Allow multiple ranges" also, you can use the plus sign to OR 
+filter-ranges like this:
 
-  http://yoursite.com/yourthirdview/a--e~+k--r~/--500
+  http://yoursite.com/yourotherview/a--e~+k--r~/--500
+  
+The above means a--e~ OR k--r~
 
 Or, if your view has "Glossary mode" is on, so that only the first letter
 matters, the above becomes:
 
-  http://yoursite.com/yourthirdview/a--e+k--r/--500
+  http://yoursite.com/yourotherview/a--e+k--r/--500
 
 You may use a colon ':' instead of the double hyphen.
 Use either '--', ':' or 'all' to return all View results for the associated
 filter:
 
-  http://yoursite.com/yourthirdview/all/-100--999.99
+  http://yoursite.com/yourotherview/all/-100--999.99
 
 You can opt to have URL arguments validated as numeric ranges in the Views UI
 fieldset titled "When the filter value IS in the URL ...". Tick the "Specify
@@ -72,6 +83,7 @@ validation criteria" box and select the "Numeric Range" validator from the
 drop-down. Just like core's "Numeric" validator, the "Numeric Range" validator
 must not be selected if the "Allow multiple numeric ranges" box is ticked.
 Instead select "-Basic Validation-".
+
 
 Default Contextual Filter via PHP Code
 --------------------------------------
@@ -82,7 +94,8 @@ Examples:
 o Nearby locations
 o Similarly priced products
 o Blog posts published around the same time
-For full examples, see https://medium.com/@rikdeboer/new-ways-to-display-related-content-with-views-in-drupal-8-9-2444a7a889e3
+For full examples, see:
+https://medium.com/@rikdeboer/new-ways-to-display-related-content-with-views-in-drupal-8-9-2444a7a889e3
 
 
 ASCII AND UTF CHARACTER ORDERING

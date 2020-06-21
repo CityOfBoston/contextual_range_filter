@@ -64,8 +64,12 @@ class DateRange extends Date {
       // ... and everything else.
       default:
         $this->format = 'F j, Y';
-        // Should we allow an optional appended time-of-day, eg 'Ymd H:i:s'?
-        $this->argFormat = 'Ymd';
+        // argFormat used to be 'Ymd'. However in D8 when a plain Context Filter
+        // is used for a timestamp or a DateTime the default format is 'Y-m-d'.
+        // This is also the format used by MySQL.
+        // Should we allow an optional appended time-of-day, eg 'Y-m-d H:i:s'?
+        // This would clash with the alternative range operator ':'.
+        $this->argFormat = 'Y-m-d';
         break;
     }
   }
