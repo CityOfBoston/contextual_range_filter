@@ -47,8 +47,13 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
     $argument_info = Views::pluginManager('argument')->getDefinitions();
 
     foreach (Views::getAllViews() as $view) {
+      $view_name = $view->get('label');
+      if (views_view_is_disabled($view)) {
+        $view_name .= ' (' . $this->t('disabled') . ')';
+      }
       foreach ($view->get('display') as $display) {
         if (!empty($display['display_options']['arguments'])) {
+
           foreach ($display['display_options']['arguments'] as $contextual_filter) {
             $plugin_id = $contextual_filter['plugin_id'];
             $class = $argument_info[$plugin_id]['class'];
@@ -74,10 +79,6 @@ class ContextualRangeFilterAssignmentForm extends ConfigFormBase {
               // "taxonomy_term_data:tid", not "node:term_node_tid_depth".
               $machine_name = $contextual_filter['table'] . ':' . $contextual_filter['field'];
 
-              $view_name = $view->get('label');
-              if (views_view_is_disabled($view)) {
-                $view_name .= ' (' . $this->t('disabled') . ')';
-              }
               if ($is_date_handler) {
                 $title_used = isset($range_fields['date_field_names'][$machine_name][$title]);
                 if (!$title_used || !in_array($view_name, $range_fields['date_field_names'][$machine_name][$title])) {

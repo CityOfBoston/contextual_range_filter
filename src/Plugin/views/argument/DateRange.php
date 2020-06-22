@@ -59,7 +59,7 @@ class DateRange extends Date {
 
       // 'changed':
       // 'changed_fulldate':
-      // 'created':
+      // 'created':  // for nodes and users
       // 'created_fulldate':
       // ... and everything else.
       default:
@@ -154,14 +154,16 @@ class DateRange extends Date {
    */
   public function getDateField() {
     // This is a littly iffy... Basically we assume that, unless the field is
-    // a known timestamp by the name of 'changed' or 'created', the field is a
-    // Drupal DateTime, which presents itself to MySQL as a string of the
-    // format '2020-12-31T23:59:59'.
+    // a known timestamp by the name of 'changed*' or 'created*' or 'login' or
+    // or 'access', the field is a Drupal DateTime, which presents itself to
+    // MySQL as a string of the format '2020-12-31T23:59:59'.
     // Perhaps a better approach is to have a checkbox on the Contextual Filter
     // form for the user to indicate whether the date is a timestamp or a
     // DateTime (i.e. string).
     $first7chars = substr($this->field, 0, 7);
-    $is_string_date = ($first7chars != 'changed') && ($first7chars != 'created');
+    $is_string_date = ($first7chars != 'changed') && ($first7chars != 'created')
+      // User Last Login and User Last Access
+      && ($this->field != 'login') && ($this->field != 'access');
     return $this->query->getDateField("$this->tableAlias.$this->realField", $is_string_date);
   }
 
