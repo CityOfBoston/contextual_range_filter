@@ -2,8 +2,7 @@ name: Views Contextual Range Filter
 type: module
 description: 'Contextually filter Views by alphabetic, date or numeric ranges, e.g. <em>http://yoursite.com/yourview/50--99.95</em>'
 package: Views
-core: 8.x
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^9.3 || ^10
 configure: contextual_range_filter.settings
 dependencies:
  - drupal:views

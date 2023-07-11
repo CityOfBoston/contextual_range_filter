@@ -1,0 +1,12 @@
+{
+  "name": "cityofboston/contextual_range_filter",
+  "description": "Drupal 10 port for contextual_range_filter: Provides option to contextually filter Views by alphabetic, list or numeric ranges",
+  "type": "drupal-module",
+  "homepage": "https://drupal.org/project/contextual_range_filter",
+  "authors": [],
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/contextual_range_filter",
+    "source": "https://github.com/CityOfBoston/contextual_range_filter"
+  },
+  "license": "GPL-2.0+"
+}

@@ -33,7 +33,7 @@ function contextual_range_filter_help($route_name, RouteMatchInterface $route_ma
       ];
       $help1 = t('You must first add contextual filters in the advanced section of the Views UI before they appear on this <a href=":one">configuration</a> page.<br/>When defined contextual range filters are employed like normal contextual filters, i.e. by apppending "arguments" to the URL. You separate "from" and "to" values by a double hyphen, e.g., <em>http://yoursite.com/yourview/50--149.95</em><br/>You may omit the from or to values to create open-ended ranges, e.g., <em>http://yoursite.com/yourview/--149.95</em> or <em>http://yoursite.com/yourview/50--</em><br/>All filter ranges are inclusive of from and to values.<br/>Instead of "<strong>--</strong>" you may use a colon "<strong>:</strong>"', $options);
       $extra1_options = [
-        ':README' => Url::fromUri('internal:/' . drupal_get_path('module', 'contextual_range_filter') . '/README.txt')->toString(),
+        ':README' => Url::fromUri('internal:/' . \Drupal::service('extension.list.module')->getPath('contextual_range_filter') . '/README.txt')->toString(),
       ];
       $extra1 = t('Configuration and usage instructions with examples can be found in the <a target="readme" href=":README">README</a> file.', $extra1_options);
       $extra2_options = [
